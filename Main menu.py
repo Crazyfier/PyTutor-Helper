@@ -12,10 +12,10 @@ month_limit = 100
 day_limit = 20
 session_limit = 10
 
-session = {
-    "1" : "10am-12pm",
-    "2" : "2pm-4pm",
-    "3" : "4pm-6pm"
+class_option = {
+    1: {"Class 1" : "10am-12pm", "Teacher" : "Miss Olivia"},
+    2: {"Class 2" : "2pm-4pm", "Teacher" : "Miss Lucia"},
+    3: {"Class 3" : "4pm-6pm", "Teacher" : "Miss Olivia"},
 }
 
 # Where all list and dictionaries are
@@ -99,7 +99,7 @@ def add_student(student_name, student_age, student_contact, session_month, sessi
     student_data[student_number]["Phone Number"] = student_contact
     student_data[student_number]["Month"] = session_month
     student_data[student_number]["Day"] = session_day
-    student_data[student_number]["Session Time"] = session[session_number]
+    student_data[student_number]["Session Time"] = class_option[session_number]
 
 def phone_val(number):
     if len(number) == 10:

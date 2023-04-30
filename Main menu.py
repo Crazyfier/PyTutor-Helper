@@ -1,10 +1,8 @@
 import re
-import csv
 import os
 import datetime
 
 clear = lambda: os.system("cls")
-field_names = ["No.", "Name", "Age", "Contact Info", "Month", "Day", "Session Number"]
 
 # You are able to edit this to your liking or add on additional option
 
@@ -13,93 +11,61 @@ day_limit = 20
 session_limit = 10
 
 class_option = {
-    1: {"Class 1" : "10am-12pm", "Teacher" : "Miss Olivia"},
-    2: {"Class 2" : "2pm-4pm", "Teacher" : "Miss Lucia"},
-    3: {"Class 3" : "4pm-6pm", "Teacher" : "Miss Olivia"},
+    "1" : {"Time" : "10am-12pm", "Teacher" : "Miss Olivia"},
+    "2" : {"Time" : "2pm-4pm", "Teacher" : "Miss Lucia"},
+    "3" : {"Time" : "4pm-6pm", "Teacher" : "Miss Olivia"}
 }
 
 # Where all list and dictionaries are
 
-day = {
-    "1" : "monday",
-    "2" : "tuesday",
-    "3" : "wednesday",
-    "4" : "thursday",
-    "5" : "friday",
-    "6" : "saturday",
-    "7" : "sunday"
-}
+day = {"1" : "monday", "2" : "tuesday", "3" : "wednesday", "4" : "thursday", "5" : "friday", "6" : "saturday", "7" : "sunday"}
 
-month = {
-    "1" : "january",
-    "2" : "february",
-    "3" : "march",
-    "4" : "april",
-    "5" : "may",
-    "6" : "june",
-    "7" : "july",
-    "8" : "august",
-    "9" : "september",
-    "10" : "october",
-    "11" : "november",
-    "12" : "december"
-}
+month = {"1" : "january", "2" : "february", "3" : "march", "4" : "april", "5" : "may", "6" : "june", "7" : "july", "8" : "august", "9" : "september", "10" : "october", "11" : "november", "12" : "december"}
 
 student_data = {
-    1: {"Name": "Edison", "Age": 21, "Contact Info": "0138300886", "Month": "april", "Day": "wednesday", "Session Time": "10am-12pm"},
-    2: {"Name": "Ayato", "Age": 18, "Contact Info": "0138300886", "Month": "april", "Day": "wednesday", "Session Time": "10am-12pm"},
-    3: {"Name": "Yoimiya", "Age": 18, "Contact Info": "0138300886", "Month": "april", "Day": "wednesday", "Session Time": "10am-12pm"},
-    4: {"Name": "Shinobu", "Age": 19, "Contact Info": "0138300886", "Month": "april", "Day": "wednesday", "Session Time": "10am-12pm"},
-    5: {"Name": "Kojuro", "Age": 20, "Contact Info": "0138300886", "Month": "april", "Day": "wednesday", "Session Time": "10am-12pm"},
-    6: {"Name": "Muzan", "Age": 18, "Contact Info": "0138300886", "Month": "april", "Day": "wednesday", "Session Time": "10am-12pm"},
-    7: {"Name": "Tanjiro", "Age": 17, "Contact Info": "0138300886", "Month": "april", "Day": "wednesday", "Session Time": "10am-12pm"},
-    8: {"Name": "Sengoku", "Age": 18, "Contact Info": "0138300886", "Month": "april", "Day": "wednesday", "Session Time": "10am-12pm"},
-    9: {"Name": "Narute", "Age": 17, "Contact Info": "0138300886", "Month": "april", "Day": "wednesday", "Session Time": "10am-12pm"},
-    10: {"Name": "Sasuke", "Age": 18, "Contact Info": "0138300886", "Month": "april", "Day": "wednesday", "Session Time": "10am-12pm"}
+    1: {"Name": "Edison", "Age": 21, "Contact Info": "0138300886"},
+    2: {"Name": "Ayato", "Age": 18, "Contact Info": "0138300886"},
+    3: {"Name": "Yoimiya", "Age": 18, "Contact Info": "0138300886"},
+    4: {"Name": "Shinobu", "Age": 19, "Contact Info": "0138300886"},
+    5: {"Name": "Kojuro", "Age": 20, "Contact Info": "0138300886"},
+    6: {"Name": "Muzan", "Age": 18, "Contact Info": "0138300886"},
+    7: {"Name": "Tanjiro", "Age": 17, "Contact Info": "0138300886"},
+    8: {"Name": "Sengoku", "Age": 18, "Contact Info": "0138300886"},
+    9: {"Name": "Narute", "Age": 17, "Contact Info": "0138300886"},
+    10: {"Name": "Sasuke", "Age": 18, "Contact Info": "0138300886"}
+}
+
+student_schedule = {
+    "Edison" : {"Month": "april", "Day": "wednesday", "Time": "10am-12pm", "Teacher" : "Miss Olivia"},
+    "Ayato" : {"Month": "april", "Day": "wednesday", "Time": "10am-12pm", "Teacher" : "Miss Olivia"},
+    "Yoimiya" : {"Month": "april", "Day": "wednesday", "Time": "10am-12pm", "Teacher" : "Miss Olivia"},
+    "Shinobu" : {"Month": "april", "Day": "wednesday", "Time": "10am-12pm", "Teacher" : "Miss Olivia"},
+    "Kojuro" : {"Month": "april", "Day": "wednesday", "Time": "10am-12pm", "Teacher" : "Miss Olivia"},
+    "Muzan" : {"Month": "april", "Day": "wednesday", "Time": "10am-12pm", "Teacher" : "Miss Olivia"},
+    "Tanjiro" : {"Month": "april", "Day": "wednesday", "Time": "10am-12pm", "Teacher" : "Miss Olivia"},
+    "Sengoku" : {"Month": "april", "Day": "wednesday", "Time": "10am-12pm", "Teacher" : "Miss Olivia"},
+    "Narute" : {"Month": "april", "Day": "wednesday", "Time": "10am-12pm", "Teacher" : "Miss Olivia"},
+    "Sasuke" : {"Month": "april", "Day": "wednesday", "Time": "10am-12pm", "Teacher" : "Miss Olivia"}
 }
 
 # This section is where the all the modules are
 
-def session_capacity_checker(input, data):
-    check_list = []
-    if input == 1:
-        for student_no, student_info in student_data.items():
-            if student_info["Month"] == data:
-                check_list.append(student_info["Name"])
-                if len(check_list) > month_limit:
-                    return True
-                else:
-                    return False
-                
-    elif input == 2:
-        for student_no, student_info in student_data.items():
-            if student_info["Day"] == data:
-                check_list.append(student_info["Name"])
-                if len(check_list) > day_limit:
-                    return True
-                else:
-                    return False
-    elif input == 3:
-        for student_no, student_info in student_data.items():
-            if student_info["Session Time"] == data:
-                check_list.append(student_info["Name"])
-                if len(check_list) > session_limit:
-                    return True
-                else:
-                    return False
+def add_student(student_name, student_age, student_contact, session_month, session_day, class_num):
+    student_data_number = len(student_data) + 1
+
+    student_data[student_data_number] = {}
+
+    student_data[student_data_number]["Name"] = student_name
+    student_data[student_data_number]["Age"] = student_age
+    student_data[student_data_number]["Phone Number"] = student_contact
+
     
+    student_schedule[student_data[student_data_number]["Name"]] = {}
 
-def add_student(student_name, student_age, student_contact, session_month, session_day, session_number):
-    student_number = len(student_data) + 1
-
-    student_data[student_number] = {}
-
-    student_data[student_number]["Name"] = student_name
-    student_data[student_number]["Age"] = student_age
-    student_data[student_number]["Phone Number"] = student_contact
-    student_data[student_number]["Month"] = session_month
-    student_data[student_number]["Day"] = session_day
-    student_data[student_number]["Session Time"] = class_option[session_number]
+    student_schedule[student_data[student_data_number]["Name"]]["Month"] = session_month
+    student_schedule[student_data[student_data_number]["Name"]]["Day"] = session_day
+    student_schedule[student_data[student_data_number]["Name"]]["Time"] = class_option[class_num]["Time"]
+    student_schedule[student_data[student_data_number]["Name"]]["Teacher"] = class_option[class_num]["Teacher"]
 
 def phone_val(number):
     if len(number) == 10:
@@ -174,10 +140,11 @@ if decision == "1":
     response_day = input("Enter day of the week: ")
 
 
-    # Entering Session Time
-    session_time = input("Enter Session Number: ")
+    # Entering Time
+    session_time = input("Enter Number: ")
 
     add_student(student_name, student_age, student_contact, month[response_month], day[response_day], session_time)
 
     clear()
-    print(student_data)
+    print(student_data,"\n")
+    print(student_schedule)

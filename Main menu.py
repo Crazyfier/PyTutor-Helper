@@ -5,11 +5,6 @@ import datetime
 clear = lambda: os.system("cls")
 
 # You are able to edit this to your liking or add on additional option
-
-month_limit = 100
-day_limit = 20
-session_limit = 10
-
 class_option = {
     "1" : {"Time" : "10am-12pm", "Teacher" : "Miss Olivia"},
     "2" : {"Time" : "2pm-4pm", "Teacher" : "Miss Lucia"},
@@ -36,16 +31,16 @@ student_data = {
 }
 
 student_schedule = {
-    "Edison" : {"Month": "april", "Day": "wednesday", "Time": "10am-12pm", "Teacher" : "Miss Olivia"},
-    "Ayato" : {"Month": "april", "Day": "wednesday", "Time": "10am-12pm", "Teacher" : "Miss Olivia"},
-    "Yoimiya" : {"Month": "april", "Day": "wednesday", "Time": "10am-12pm", "Teacher" : "Miss Olivia"},
-    "Shinobu" : {"Month": "april", "Day": "wednesday", "Time": "10am-12pm", "Teacher" : "Miss Olivia"},
-    "Kojuro" : {"Month": "april", "Day": "wednesday", "Time": "10am-12pm", "Teacher" : "Miss Olivia"},
-    "Muzan" : {"Month": "april", "Day": "wednesday", "Time": "10am-12pm", "Teacher" : "Miss Olivia"},
-    "Tanjiro" : {"Month": "april", "Day": "wednesday", "Time": "10am-12pm", "Teacher" : "Miss Olivia"},
-    "Sengoku" : {"Month": "april", "Day": "wednesday", "Time": "10am-12pm", "Teacher" : "Miss Olivia"},
-    "Narute" : {"Month": "april", "Day": "wednesday", "Time": "10am-12pm", "Teacher" : "Miss Olivia"},
-    "Sasuke" : {"Month": "april", "Day": "wednesday", "Time": "10am-12pm", "Teacher" : "Miss Olivia"}
+    1 : {"Name" : "Edison", "Month": "april", "Day": "wednesday", "Time": "10am-12pm", "Teacher" : "Miss Olivia"},
+    2 : {"Name": "Ayato", "Month": "april", "Day": "wednesday", "Time": "10am-12pm", "Teacher" : "Miss Olivia"},
+    3 : {"Name": "Yoimiya", "Month": "april", "Day": "wednesday", "Time": "10am-12pm", "Teacher" : "Miss Olivia"},
+    4 : {"Name": "Shinobu", "Month": "april", "Day": "wednesday", "Time": "10am-12pm", "Teacher" : "Miss Olivia"},
+    5 : {"Name": "Kojuro", "Month": "april", "Day": "wednesday", "Time": "10am-12pm", "Teacher" : "Miss Olivia"},
+    6 : {"Name": "Muzan", "Month": "april", "Day": "wednesday", "Time": "10am-12pm", "Teacher" : "Miss Olivia"},
+    7 : {"Name": "Tanjiro", "Month": "april", "Day": "wednesday", "Time": "10am-12pm", "Teacher" : "Miss Olivia"},
+    8 : {"Name": "Sengoku", "Month": "april", "Day": "wednesday", "Time": "10am-12pm", "Teacher" : "Miss Olivia"},
+    9 : {"Name": "Narute", "Month": "april", "Day": "wednesday", "Time": "10am-12pm", "Teacher" : "Miss Olivia"},
+    10 : {"Name": "Sasuke", "Month": "april", "Day": "wednesday", "Time": "10am-12pm", "Teacher" : "Miss Olivia"}
 }
 
 # This section is where the all the modules are
@@ -60,12 +55,13 @@ def add_student(student_name, student_age, student_contact, session_month, sessi
     student_data[student_data_number]["Phone Number"] = student_contact
 
     
-    student_schedule[student_data[student_data_number]["Name"]] = {}
+    student_schedule[student_data_number] = {}
 
-    student_schedule[student_data[student_data_number]["Name"]]["Month"] = session_month
-    student_schedule[student_data[student_data_number]["Name"]]["Day"] = session_day
-    student_schedule[student_data[student_data_number]["Name"]]["Time"] = class_option[class_num]["Time"]
-    student_schedule[student_data[student_data_number]["Name"]]["Teacher"] = class_option[class_num]["Teacher"]
+    student_schedule[student_data_number]["Name"] = student_name
+    student_schedule[student_data_number]["Month"] = session_month
+    student_schedule[student_data_number]["Day"] = session_day
+    student_schedule[student_data_number]["Time"] = class_option[class_num]["Time"]
+    student_schedule[student_data_number]["Teacher"] = class_option[class_num]["Teacher"]
 
 def phone_val(number):
     if len(number) == 10:

@@ -1,4 +1,8 @@
 import os
+import textwrap
+import sqlite3
+
+command_to_quit = "#back"
 
 clear = lambda: os.system("cls")
 

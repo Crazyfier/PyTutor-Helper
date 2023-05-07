@@ -1,13 +1,13 @@
-import sqlite3
-import mymodule
-import textwrap
+from mymodule import *
 import Registration
 
 decision = -1
 
 while decision != 0:
-    mymodule.clear()
+    clear()
     print(textwrap.dedent("""
+    Commands: #back --> return to previous page
+
     What would you like to do?
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     (1) Register Student  | Register a new student
@@ -19,12 +19,12 @@ while decision != 0:
 
     decision = str(input("Enter your option [0/1/2/3]: "))
 
-    while (mymodule.input_val(decision, True, False)[0]) or int(mymodule.input_val(decision, True, False)[1]) not in [0, 1, 2, 3]:
+    while (input_val(decision, True, False)[0]) or int(input_val(decision, True, False)[1]) not in [0, 1, 2, 3]:
         decision = str(input("Invalid option, try again [0/1/2/3]: "))
 
-    decision = int(mymodule.input_val(decision, True, False)[1]) 
+    decision = int(input_val(decision, True, False)[1]) 
 
-    mymodule.clear()
+    clear()
 
     proceed = "y"
     if decision == 1:
@@ -52,19 +52,19 @@ while decision != 0:
             """))
 
             decision = str(input("Enter your option [0/1/2]: "))
-            while (mymodule.input_val(decision, True, False)[0]) or int(mymodule.input_val(decision, True, False)[1]) not in [0, 1, 2]:
+            while (input_val(decision, True, False)[0]) or int(input_val(decision, True, False)[1]) not in [0, 1, 2]:
                 decision = str(input("Invalid option, try again [0/1/2]: "))
-            decision = str(mymodule.input_val(decision, True, False)[1])
+            decision = str(input_val(decision, True, False)[1])
 
             print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
             if decision == "1":
 
                 student_number = str(input("Enter student number: ")).replace(" ","")
-                while (mymodule.input_val(student_number, True, False)[0]) or int(mymodule.input_val(student_number, True, False)[1]) not in id:
+                while (input_val(student_number, True, False)[0]) or int(input_val(student_number, True, False)[1]) not in id:
                     student_number = str(input("Invalid student number, try again: "))
 
-                student_number = str(mymodule.input_val(student_number, True, False)[1])
+                student_number = str(input_val(student_number, True, False)[1])
 
                 print(textwrap.dedent("""
                 (1) Name       (5) Day
@@ -75,46 +75,46 @@ while decision != 0:
                 target = str(input("Enter the number of the category one wish to change: ")).replace(" ","")
                 
                 category = {1 : "name", 2 : "age", 3 : "contact", 4 : "month", 5 : "day", 6 : "time", 7 : "teacher"}
-                while (mymodule.input_val(target, True, False)[0]) or int(mymodule.input_val(target, True, False)[1]) not in category:
+                while (input_val(target, True, False)[0]) or int(input_val(target, True, False)[1]) not in category:
                     target = str(input("Invalid option, its up there: "))
 
-                target = int(mymodule.input_val(target, True, False)[1])
+                target = int(input_val(target, True, False)[1])
             
                 if target == "name":
 
                     correction = str(input("Enter change: ")).replace(" ","")
-                    while (mymodule.input_val(correction, False, True)[0]):
+                    while (input_val(correction, False, True)[0]):
                         correction = str(input("Invalid input, try again: "))
 
-                    correction = str(mymodule.input_val(correction, False, True)[1])
+                    correction = str(input_val(correction, False, True)[1])
 
                 elif target == "age":
 
                     correction = str(input("Age: ")).replace(" ","")
-                    while (mymodule.input_val(correction, True, False)[0]) or int(mymodule.input_val(correction, False, True)[1]) > 50:
+                    while (input_val(correction, True, False)[0]) or int(input_val(correction, False, True)[1]) > 50:
                         print("Input only accepts numbers.")
                         correction = str(input("Age: ")).replace(" ","")
 
-                    correction = int(mymodule.input_val(correction, False, True)[1])
+                    correction = int(input_val(correction, False, True)[1])
 
                 elif target == "contact":
 
                     correction = str(input("Phone Number: ")).replace(" ","")
-                    while (mymodule.input_val(correction, True, False)[0]) or mymodule.phone_val(correction) == False:
+                    while (input_val(correction, True, False)[0]) or phone_val(correction) == False:
                         print("Input 10-digit mobile number.")
                         correction = str(input("Phone Number: ")).replace(" ","")
 
                 elif target == "month":
 
                     correction = str(input("Enter the number of month [1 - 12]: ")).replace(" ","")
-                    while (mymodule.input_val(correction, True, False)[0]) or str(mymodule.input_val(correction, True, False)[1]) not in mymodule.month:
+                    while (input_val(correction, True, False)[0]) or str(input_val(correction, True, False)[1]) not in month:
                         print("Enter a number from 1 - 12.")
                         correction = str(input("Enter the number of month [1 -12]: ")).replace(" ","")
 
                 elif target == "day":
 
                     correction = str(input("Enter day of the week [1 - 7]: ")).replace(" ","")
-                    while (mymodule.input_val(correction, True, False)[0]) or str(mymodule.input_val(correction, True, False)[1]) not in mymodule.day:
+                    while (input_val(correction, True, False)[0]) or str(input_val(correction, True, False)[1]) not in day:
                         print("Enter a number from 1 - 7.")
                         correction = str(input("Enter day of the week [1 - 7]: ")).replace(" ","")
 
@@ -126,7 +126,7 @@ while decision != 0:
                     record = cursor.fetchone()
 
                     conn = sqlite3.connect('Class_Schedule.db')
-                    cursor = conn.execute(f"SELECT class_no, time, teacher from {mymodule.day[record[4].lower()]}_class")
+                    cursor = conn.execute(f"SELECT class_no, time, teacher from {day[record[4].lower()]}_class")
                     print ("\x1B[4m  {:<1} |{:^15} |{:^19} \x1B[0m".format("", "Time", "Teacher"))
 
                     #Classifying time and teacher into a dictionary to store in mymodule
@@ -138,18 +138,18 @@ while decision != 0:
 
                     # Entering Time
                     correction = str(input("Enter Number: ")).replace(" ","")
-                    while (mymodule.input_val(correction, True, False)[0]) or str(mymodule.input_val(correction, True, False)[1]) not in class_data:
+                    while (input_val(correction, True, False)[0]) or str(input_val(correction, True, False)[1]) not in class_data:
                         print("I want you to think again.")
                         correction = str(input("Enter Number: ")).replace(" ","")
                     
-                    correction = int(mymodule.input_val(correction, True, False)[1])
+                    correction = int(input_val(correction, True, False)[1])
 
-                    mymodule.update_student(student_number, "teacher", class_data[correction][2])
-                mymodule.update_student(student_number, category[target], correction)
+                    update_student(student_number, "teacher", class_data[correction][2])
+                update_student(student_number, category[target], correction)
 
             elif decision =="2":
 
-                mymodule.delete_student()
+                delete_student()
             
 
 print("PyTutor Helper wishes you a safe travels!")

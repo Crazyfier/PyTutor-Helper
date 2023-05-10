@@ -1,10 +1,11 @@
 
 from mymodule import *
 
+def hey_new_people():
 
+    clear()
 
-
-def registration():
+    print("~~~~~Registration~~~~~\n")
 
     student_name = str(input("Name: "))
     while (input_val(student_name, False, True)[0]):
@@ -13,7 +14,7 @@ def registration():
         print("Invalid input try again.")
         student_name = str(input("Name: "))
 
-    student_name = str(input_val(student_name, False, True)[1])
+    student_name = str(input_val(student_name, False, True)[1]).capitalize()
 
 
     # Entering Age
@@ -59,19 +60,19 @@ def registration():
     clear()
 
     #Display Time Option
-    conn = sqlite3.connect('Class_Schedule.db')
     cursor = conn.execute(f"SELECT class_no, time, teacher from {day[student_day]}_class")
     print ("\x1B[4m  {:<1} |{:^15} |{:^19} \x1B[0m".format("", "Time", "Teacher"))
 
     #Classifying time and teacher into a dictionary to store in mymodule
     class_data = {}
+    teacher = {}
     for row in cursor:
         class_data[row[0]] = row[1], row[2]
+        teacher[row[0]] = row[2]
         print ("({:<1}) |{:^15} |{:^19}".format(row[0], row[1], row[2]))
-    print("")
 
     # Entering Time
-    student_time = str(input("Enter Number: ")).replace(" ","")
+    student_time = str(input("\nEnter Number: ")).replace(" ","")
     while (input_val(student_time, True, False)[0]) or int(input_val(student_time, True, False)[1]) not in class_data:
         if student_time == command_to_quit:
             return "n"
@@ -84,7 +85,7 @@ def registration():
     # The fee is calculated by the week
     student_fee = 0
 
-    add_student(student_name, student_age, student_contact, (month[student_month]).title(), (day[student_day]).title(), class_data[student_time][1], class_data[student_time][2], student_fee)
+    add_student(student_name, student_age, student_contact, (month[student_month]).title(), (day[student_day]).title(), class_data[student_time][0], teacher[student_time], student_fee)
     
     clear()
 

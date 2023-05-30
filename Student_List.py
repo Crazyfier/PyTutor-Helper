@@ -42,14 +42,21 @@ def display_student_list():
 def edit_page():
     # Prompt to edit name of student
     def editing_name():
-        print("{:^60}".format("-------- Editing Name --------\n"))
-        print("{:^60}".format("[  #back to return  ]\n")) 
+        current_name = (conn.execute(f"SELECT name FROM student_data where student_id = {student_number}").fetchone()[0]).title()
+
+        clear()
+        print()
+        print("{:^60}".format(f"Currently Editting student : {current_name}")) 
+        print("{:^60}".format("[  #back to return  ]\n"))
+        print("{:^60}".format("--------- Edit Name ---------\n"))
         update_name = str(input("New name : "))
 
         while input_val(update_name, False, True)[0]:
-            display_student_list()
-            print("{:^60}".format("-------- Editing Name --------\n"))
+            clear()
+            print()
+            print("{:^60}".format(f"Currently Editting student : {current_name}")) 
             print("{:^60}".format("[  #back to return  ]\n")) 
+            print("{:^60}".format("--------- Edit Name ---------\n"))
 
             if update_name == command_to_return:
                 return "y"
@@ -71,15 +78,24 @@ def edit_page():
         update_student(student_number, "name", update_name)
 
     # Prompt to edit age of student
-    def editing_age():
-        print("{:^60}".format(f"[  Type #back to return  ]")) 
-        print("{:^60}".format("--------- Editing Age --------\n"))
-        update_age = str(input("Age : ")).replace(" ","")
+    def editing_age(): 
+        current_name = (conn.execute(f"SELECT name FROM student_data where student_id = {student_number}").fetchone()[0]).title()
+        current_age = conn.execute(f"SELECT age FROM student_data where student_id = {student_number}").fetchone()[0]
+
+        clear()
+        print()
+        print("{:^60}".format(f"Currently Editting student : {current_name}")) 
+        print("{:^60}".format("[  #back to return  ]\n"))
+        print("{:^60}".format(f"------- Current age is {current_age} -------\n"))
+
+        update_age = str(input("Change age to : ")).replace(" ","")
 
         while input_val(update_age, True, False)[0] or int(input_val(update_age, False, True)[1]) > 50:
-            display_student_list()
-            print("{:^60}".format(f"[  Type #back to return  ]")) 
-            print("{:^60}".format("--------- Editing Age --------\n"))
+            clear()
+            print()
+            print("{:^60}".format(f"Currently Editting student : {current_name}")) 
+            print("{:^60}".format("[  #back to return  ]\n"))
+            print("{:^60}".format(f"------- Current age is {current_age} -------\n"))
             
             if update_age == command_to_return:
                 return "y"
@@ -92,21 +108,30 @@ def edit_page():
             elif int(input_val(update_age, False, True)[1]) > 50:
                 print("{:^60}".format("[  Exceed age limit 50 years old, try again.  ]\n"))
                 
-            update_age = str(input("Age : ")).replace(" ","")
+            update_age = str(input("Change age to : ")).replace(" ","")
         
         update_age = int(input_val(update_age, False, True)[1])
         update_student(student_number, "age", update_age)
 
     # Prompt to edit contact of student
     def editing_contact():
-        print("{:^60}".format(f"[  Type #back to return  ]")) 
-        print("{:^60}".format("------- Editing Contact ------\n"))
+        current_name = (conn.execute(f"SELECT name FROM student_data where student_id = {student_number}").fetchone()[0]).title()
+        current_contact = conn.execute(f"SELECT contact FROM student_data where student_id = {student_number}").fetchone()[0]
+
+        clear()
+        print()
+        print("{:^60}".format(f"Currently Editting student : {current_name}")) 
+        print("{:^60}".format("[  #back to return  ]\n"))
+        print("{:^60}".format(f"------- Current contact is {current_contact} -------\n"))
+
         update_contact = str(input("Phone Number : ")).replace(" ","")
 
         while input_val(update_contact, True, False)[0] or phone_val(update_contact) == False:
-            display_student_list()
-            print("{:^60}".format(f"[  Type #back to return  ]")) 
-            print("{:^60}".format("------- Editing Contact ------\n"))
+            clear()
+            print()
+            print("{:^60}".format(f"Currently Editting student : {current_name}")) 
+            print("{:^60}".format("[  #back to return  ]\n"))
+            print("{:^60}".format(f"------- Current contact is {current_contact} -------\n"))
 
             if update_contact == command_to_return:
                 return "y"
@@ -126,6 +151,9 @@ def edit_page():
 
     # Prompt to edit the day of student
     def editing_day():
+        current_name = (conn.execute(f"SELECT name FROM student_data where student_id = {student_number}").fetchone()[0]).title()
+        current_day = conn.execute(f"SELECT day FROM student_data where student_id = {student_number}").fetchone()[0]
+
         # For class display after selecting the day
         def display_class_list(target_day):
             global class_no_for_validation
@@ -142,28 +170,56 @@ def edit_page():
                 print ("|{:^11}|{:^20}|{:^25}| ".format(row[0], time, row[3]))
             print(overline * 60)
        
-        print("{:^60}".format(f"[  Type #back to return  ]")) 
+        clear()
+        print()
+        print("{:^60}".format(f"Currently Editting student : {current_name}")) 
+        print("{:^60}".format("[  #back to return  ]\n"))
         print("{:^60}".format("--------- Editing Day --------\n"))
-
-        # Display Available day for selection
-        print("{:^60}".format(f"Switching {student[3].title()} to ...\n"))
+        print("{:^60}".format(f"Switching {current_day.title()} to ..."))
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         valid_day = []
         for row in day:
             cursor = conn.execute(f"SELECT class_no, start, end, teacher from {day[row]}_class")
             if len(list(cursor)) != 0:
                 valid_day.append(row)
-
+        # Display Available day for selection
+        line_length = 0
         for row in valid_day:
-            print(f"({row}) {day[row].title()}")
+            day_with_number = f"  ({row}) {day[row].capitalize()}"
+            day_length = len(day_with_number)
 
-        # Chooose which day to change to
-        update_day = str(input("\nEnter number of the day : ")).replace(" ","")
+            if line_length + day_length > 60:
+                print()
+                line_length = 0
+
+            padding = ' ' * (13 - day_length)
+            print(f"{day_with_number}{padding}", end=' ')
+            line_length += day_length + 10
+
+        # Chooose which day to change too
+        update_day = str(input("\n\nEnter number of the day : ")).replace(" ","")
 
         while input_val(update_day, True, False)[0] or int(input_val(update_day, True, False)[1]) not in valid_day:
-            display_student_list()
-            print("{:^60}".format(f"[  Type #back to return  ]")) 
+            clear()
+            print()
+            print("{:^60}".format(f"Currently Editting student : {current_name}")) 
             print("{:^60}".format("--------- Editing Day --------\n"))
-            
+            print("{:^60}".format("[  #back to return  ]\n")) 
+            print("{:^60}".format(f"Switching {current_day.title()} to ..."))
+            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+            line_length = 0
+            for row in valid_day:
+                day_with_number = f"  ({row}) {day[row].capitalize()}"
+                day_length = len(day_with_number)
+
+                if line_length + day_length > 60:
+                    print()
+                    line_length = 0
+
+                padding = ' ' * (13 - day_length)
+                print(f"{day_with_number}{padding}", end=' ')
+                line_length += day_length + 10
+            print("\n")
             if update_day == command_to_return:
                 return "y"
             elif update_day == command_to_quit:
@@ -178,22 +234,22 @@ def edit_page():
                 else:
                     print("{:^60}".format("[  Enter numbers between 1 and 7, try again.  ]\n"))
 
-            print("~~~~~~~~~~~~~~~~~~~~~~~ Select a Day ~~~~~~~~~~~~~~~~~~~~~~")
-            for row in valid_day:
-                print(f"  ({row}) {day[row].title()}")
-
+            
             update_day = str(input("Enter number of the day : ")).replace(" ","")
             
         update_day = int(input_val(update_day, True, False)[1])
 
+
         # Display Class time to select
         display_class_list(update_day)
-        print("{:^60}".format(f"[  Type #back to return  ]"))
-        print("{:^60}".format("------------- Select a time ------------\n"))
+        print("{:^60}".format("------------- Select a time ------------"))
+        print("{:^60}".format("[  Type #back to return  ]\n"))
         update_class_no = str(input("Enter class number: ")).replace(" ","")
 
         while input_val(update_class_no, True, False)[0] or int(input_val(update_class_no, True, False)[1]) not in class_no_for_validation:
             display_class_list(update_day)
+            print("{:^60}".format("------------- Select a time ------------"))
+            print("{:^60}".format("[  Type #back to return  ]\n"))
             if update_class_no == command_to_return:
                 return "y"
             elif update_class_no == command_to_quit:
@@ -232,7 +288,6 @@ def edit_page():
         edit_day = []
         for row in conn.execute(f"SELECT day from student_data where student_id = {student_number}"):
             edit_day.append(row[0])
-        print("{:^60}".format("------------- Select a time ------------\n"))
 
         if len(list(conn.execute(f"SELECT class_no, start, end, teacher from {edit_day[0]}_class"))) == 0:
             clear()
@@ -240,15 +295,15 @@ def edit_page():
             input("{:^60}".format("PRESS ANY KEY TO CONTINUE"))
 
         else:
-            display_class_list(edit_day)
-            print("{:^60}".format(f"[  Type #back to return  ]"))     
-            print("{:^60}".format("------------- Select a time ------------\n"))  
-            update_class_no = str(input("\nEnter class number: ")).replace(" ","")
+            display_class_list(edit_day)     
+            print("{:^60}".format("------------- Select a time ------------"))
+            print("{:^60}".format("[  #back to return  ]\n")) 
+            update_class_no = str(input("Enter class number: ")).replace(" ","")
 
             while input_val(update_class_no, True, False)[0] or int(input_val(update_class_no, True, False)[1]) not in class_no_for_validation:
                 display_class_list(edit_day)
-                print("{:^60}".format(f"[  Type #back to return  ]")) 
-                print("{:^60}".format("------------- Select a time ------------\n"))
+                print("{:^60}".format("------------- Select a time ------------"))
+                print("{:^60}".format("[  #back to return  ]\n")) 
 
                 if update_class_no == command_to_return:
                     return "y"
@@ -266,12 +321,13 @@ def edit_page():
             update_class_no = int(input_val(update_class_no, True, False)[1])
             update_student(student_number, "class_no", update_class_no)
 
-    # Prompt to add or remove month to student
+    # Prompt to add or remove student from month
     def editing_month():
         wish_to_continue = "y"
         while wish_to_continue == "y":
             display_student_list()
             print("{:^60}".format("------------ Select an option ------------"))
+            print("{:^60}".format("[  #back to return  ]"))
             print(textwrap.dedent("""
             (1) Add student to month
             (2) Remove student from month
@@ -284,6 +340,7 @@ def edit_page():
             while input_val(decision, True, False)[0] or int(input_val(decision, True, False)[1]) not in range(0,3):
                 display_student_list()
                 print("{:^60}".format("------------ Select an option ------------"))
+                print("{:^60}".format("[  #back to return  ]"))
                 print(textwrap.dedent("""
                 (1) Add student to month
                 (2) Remove student from month
@@ -351,17 +408,19 @@ def edit_page():
                 
                 # Calculate the fee needed to add onto the exisiting fee
                 day_category = {"monday" : 1, "tuesday" : 2, "wednesday" : 3, "thursday" : 4, "friday" : 5, "saturday" : 6, "sunday" : 7}
-                fee_for_calc = conn.execute(f"SELECT fee FROM student_data where student_id = {student_number}").fetchone()
-                
+                fee_for_calc = conn.execute(f"SELECT fee FROM student_data where student_id = {student_number}").fetchone()[0]
+                current_day = conn.execute(f"SELECT day FROM student_data where student_id = {student_number}").fetchone()[0]
+
                 count = 0
                 for row in range (1, calendar.monthrange(datetime.date.today().year, add_month)[1] + 1):
-                    if datetime.date(current_year, add_month, row).isoweekday() == day_category[student[3]]:
+                    if datetime.date(current_year, add_month, row).isoweekday() == day_category[current_day]:
                         count += 1
-                fee =  fee_for_calc[0] + (count * current_fee)
+                fee =  fee_for_calc + (count * current_fee)
 
                 # Change the fee of the student and add the student info into the respective month
+                current_name = conn.execute(f"SELECT name FROM student_data where student_id = {student_number}").fetchone()[0]
                 update_student(student_number, "fee", fee)
-                conn.execute(f"INSERT INTO {month[add_month]}(student_id, name) VALUES ({student_number}, '{student[0]}')")
+                conn.execute(f"INSERT INTO {month[add_month]}(student_id, name) VALUES ({student_number}, '{current_name}')")
                 conn.commit()
 
             elif decision == 2:
@@ -377,21 +436,19 @@ def edit_page():
                 print("\n~~~~~~~~~~~~~~~~~~~~~~~ Select month ~~~~~~~~~~~~~~~~~~~~~~~")
                 line_length = 0
                 for row in temp_var_month:
-                    day_with_number = f"  ({row}) {month[row].capitalize()}"
+                    day_with_number = f"({row}) {month[row].capitalize()}"
                     day_length = len(day_with_number)
 
                     if line_length + day_length > 80:
-                        print("  ")
+                        print()
                         line_length = 0
 
-                    padding = ' ' * (13 - day_length)
+                    padding = ' ' * (14 - day_length)
                     print(f"{day_with_number}{padding}", end=' ')
                     line_length += day_length + 10
-                print()
+                print("\n")
                 print("{:^60}".format("[0] Back\n"))
-                
                 remove_month = str(input("Enter number : ")).replace(" ","")
-                temp_var_month.append(0)
 
                 while input_val(remove_month, True, False)[0] or int(input_val(remove_month, True, False)[1]) not in temp_var_month:
                     display_student_list()
@@ -399,20 +456,22 @@ def edit_page():
                     print("\n~~~~~~~~~~~~~~~~~~~~~~~ Select month ~~~~~~~~~~~~~~~~~~~~~~~")
                     line_length = 0
                     for row in temp_var_month:
-                        day_with_number = f"  ({row}) {month[row].capitalize()}"
+                        day_with_number = f"({row}) {month[row].capitalize()}"
                         day_length = len(day_with_number)
 
                         if line_length + day_length > 80:
-                            print("  ")
+                            print()
                             line_length = 0
 
-                        padding = ' ' * (13 - day_length)
+                        padding = ' ' * (14 - day_length)
                         print(f"{day_with_number}{padding}", end=' ')
                         line_length += day_length + 10
-                    print()
+                    print("\n")
                     print("{:^60}".format("[0] Back\n"))
 
                     if remove_month == command_to_return:
+                        return "y"
+                    elif remove_month == 0:
                         return "y"
                     elif remove_month == command_to_quit:
                         end_screen()
@@ -430,13 +489,14 @@ def edit_page():
                 if remove_month != 0:
                     # Calculate the fee needed to add onto the exisiting fee
                     day_category = {"monday" : 1, "tuesday" : 2, "wednesday" : 3, "thursday" : 4, "friday" : 5, "saturday" : 6, "sunday" : 7}
-                    fee_for_calc = conn.execute(f"SELECT fee FROM student_data where student_id = {student_number}").fetchone()
+                    fee_for_calc = conn.execute(f"SELECT fee FROM student_data where student_id = {student_number}").fetchone()[0]
+                    current_day = conn.execute(f"SELECT day FROM student_data where student_id = {student_number}").fetchone()[0]
 
                     count = 0
                     for row in range (1, calendar.monthrange(datetime.date.today().year, remove_month)[1] + 1):
-                        if datetime.date(current_year, remove_month, row).isoweekday() == day_category[student[3]]:
+                        if datetime.date(current_year, remove_month, row).isoweekday() == day_category[current_day]:
                             count += 1
-                    fee =  fee_for_calc[0] - (count * current_fee)
+                    fee =  fee_for_calc - (count * current_fee)
 
                     # Change the fee of the student and add the student info into the respective month
                     update_student(student_number, "fee", fee)
@@ -451,6 +511,11 @@ def edit_page():
 
     # Prompt to subtract or add fee to student
     def editing_fee():
+        fee = conn.execute(f"SELECT fee FROM student_data where student_id = {student_number}").fetchone()[0]
+
+        clear()
+        print()
+        print("{:^60}".format(f"Current Fee : {locale.currency(fee)}\n"))
         print("{:^60}".format("------------ Select an option ------------"))
         print(textwrap.dedent("""
         (1) Pay
@@ -461,12 +526,15 @@ def edit_page():
 
         decision = str(input("Enter your option : ")).replace(" ","")
         while input_val(decision, True, False)[0] or int(input_val(decision, True, False)[1]) not in range(0,3):
-            display_student_list()
-            print(textwrap.dedent("""\
-            --------------------- Select an Option ---------------------
-        
+            clear()
+            print()
+            print("{:^60}".format(f"Current Fee : {locale.currency(fee)}\n"))
+            print("{:^60}".format("------------ Select an option ------------"))
+            print(textwrap.dedent("""
             (1) Pay
             (2) Add additional payment
+            
+            [0] Back
             """))
 
             if decision == command_to_return:
@@ -486,13 +554,16 @@ def edit_page():
             return "y"
         
         else:
-            display_student_list()
+            clear()
+            print()
+            print("{:^60}".format(f"Current Fee : {locale.currency(fee)}\n"))
             print("{:^60}".format("[  Enter ammount  ]\n"))
 
             ammount_entered = str(input("Accepts numbers only : ")).replace(" ","")
             while isfloat(ammount_entered) == False:
                 clear()
-                display_student_list()
+                print()
+                print("{:^60}".format(f"Current Fee : {locale.currency(fee)}\n"))
                 print("{:^60}".format("[  Enter ammount  ]\n"))
 
                 if ammount_entered == command_to_return:
@@ -519,27 +590,63 @@ def edit_page():
     # Where the all for the edit page function is executed
     student_list_edit_page = "y"
     while student_list_edit_page == "y":
-        display_student_list()
+        target_student = conn.execute(f"SELECT name, age, contact, day, class_no, fee FROM student_data where student_id = {student_number}").fetchone()
+        target_student_class = conn.execute(f"SELECT start, end, teacher FROM {target_student[3]}_class where class_no = {target_student[4]}").fetchone()
+        target_student_month = []
+        for row in month:
+            if list(conn.execute(f"SELECT student_id, name FROM {month[row]} where student_id = {student_number}")) != []:
+                target_student_month.append((month[row])[:3].capitalize())
+        target_student_month = ', '.join(target_student_month)
+        if len(target_student_month) == 0:
+            target_student_month = "Empty"
+
+        clear()
+        print(textwrap.dedent(f"""
+        Name    : {target_student[0].title()}
+        Age     : {target_student[1]}
+        Contact : {target_student[2]}
+
+        Month   : {target_student_month}
+
+        Day     : {target_student[3].title()}
+        Time    : {target_student_class[0]} - {target_student_class[1]}
+        Teacher : {target_student_class[2]}
+            
+        Fee     : {locale.currency(target_student[4])}
+        """))
         print("{:^60}".format("[  Will only change selected category  ]"))  
         print(textwrap.dedent("""\
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            (1) Name   (3) Contact   (5) Time    (7) Month
-            (2) Age    (4) Day       (6) Fee 
-                                
-                                [0] Back
+                 (1) Name   (3) Contact   (5) Day   (7) Fee
+                 (2) Age    (4) Month     (6) Time 
+
+                                 [0] Back
         """))
-        
+
         target = str(input("Input category number : ")).replace(" ","")
         
         while input_val(target, True, False)[0] or int(input_val(target, True, False)[1]) not in range(0,8):
-            display_student_list()
+            clear()
+            print(textwrap.dedent(f"""
+            Name    : {target_student[0].title()}
+            Age     : {target_student[1]}
+            Contact : {target_student[2]}
+
+            Month   : {target_student_month}
+
+            Day     : {target_student[3].title()}
+            Time    : {target_student_class[0]} - {target_student_class[1]}
+            Teacher : {target_student_class[2]}
+                
+            Fee     : {locale.currency(target_student[4])}
+            """))
             print("{:^60}".format("[  Will only change selected category  ]"))  
             print(textwrap.dedent("""\
             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                (1) Name   (3) Contact   (5) Time    (7) Month
-                (2) Age    (4) Day       (6) Fee 
+                     (1) Name   (3) Contact   (5) Day   (7) Fee
+                     (2) Age    (4) Month     (6) Time 
                                     
-                                    [0] Back
+                                     [0] Back
             """))
 
             if target == command_to_return:
@@ -557,28 +664,21 @@ def edit_page():
 
         target = int(input_val(target, True, False)[1])
         
-        display_student_list()
         if target == 1:
             editing_name()
-
         elif target == 2:
             editing_age()
-
         elif target == 3:
             editing_contact()
-
         elif target == 4:
-            editing_day()
-
-        elif target == 5:
-            editing_time()
-
-        elif target == 6:
-            editing_fee()
-
-        elif target == 7:
             editing_month()
-
+        elif target == 5:
+            editing_day()
+        elif target == 6:
+            editing_time()
+        elif target == 7:
+            editing_fee()
+        
         elif target == 0:
             student_list_edit_page = "n"
             
@@ -644,7 +744,8 @@ def oh_look_students():
             decision = int(input_val(decision, True, False)[1])
 
             display_student_list()
-            print("{:^60}".format("------- Student Number -------\n"))
+            print("{:^60}".format("------- Student Number ------\n"))
+            print("{:^60}".format("[  #back to return  ]\n")) 
             student_number = str(input("Enter student number: ")).replace(" ","")
 
             exisitng_student_id = []
@@ -653,8 +754,8 @@ def oh_look_students():
 
             while input_val(student_number, True, False)[0] or int(input_val(student_number, True, False)[1]) not in exisitng_student_id:
                 display_student_list()
-                print("{:^60}".format(f"[  Type #back to return  ]"))
-                print("{:^60}".format("------- Student Number -------\n"))
+                print("{:^60}".format("------- Student Number ------\n"))
+                print("{:^60}".format("[  #back to return  ]\n")) 
 
                 if student_number == command_to_return:
                     break
@@ -673,7 +774,6 @@ def oh_look_students():
                 student_list_main_page = "y"
             else:
                 student_number = int(input_val(student_number, True, False)[1])
-                student = conn.execute(f"SELECT name, age, contact, day FROM student_data where student_id = {student_number}").fetchone()
 
                 # EDIT STUDENT INFO PAGE
                 if decision == 1:

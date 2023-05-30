@@ -102,9 +102,9 @@ def input_student_month():
 
         print(textwrap.dedent("""
         ~~~~~~~~~~~~~~~~~~~~~~ Select a month ~~~~~~~~~~~~~~~~~~~~~~
-          (1) January    (5) April   (7) July        (10) October
-          (2) February   (6) May     (8) August      (11) November
-          (3) March      (7) June    (9) September   (12) December
+          (1) January    (4) April   (7) July        (10) October
+          (2) February   (5) May     (8) August      (11) November
+          (3) March      (6) June    (9) September   (12) December
         """))
 
         if student_month == command_to_return:

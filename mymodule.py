@@ -130,7 +130,7 @@ def end_screen():
     clear()
     input(textwrap.dedent("""
 
-               [  PyTutor Helper wishes you a safe travels!  ]          
+               [  PyTutor Helper wishes you safe travels!  ]          
 
 
     ████████                      ██  ██                                 

@@ -782,14 +782,15 @@ def oh_look_students():
                 # REMOVE STUDENT INFO PAGE
                 elif decision == 2:
                     display_student_list()
-                    print("{:^60}".format(f"Currently Removing student : {student[0].title()}\n"))
+                    current_name = conn.execute(f"SELECT name FROM student_data where student_id = {student_number}")
+                    print("{:^60}".format(f"Currently Removing student : {current_name.title()}\n"))
                     
                     confirmation = str(input("Do you want to remove this student? [y / n] : ")).replace(" ","")
 
                     while input_val(confirmation, False, True)[0] or str(input_val(confirmation, False, True)[1]) not in ("y","n"):
                         display_student_list()
                         
-                        print("{:^60}".format(f"Currently Removing student : {student[0].title()}\n"))
+                        print("{:^60}".format(f"Currently Removing student : {current_name.title()}\n"))
                         
                         if confirmation == command_to_return:
                             break

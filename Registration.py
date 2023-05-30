@@ -276,42 +276,42 @@ def hey_new_people():
                     elif type(value) == bool:
                         empty = value
             
+            if resume_input != "n":
+                # AUTOMATICALLY CALCULATE THE FEE FOR THE MONTH
+                current_fee = conn.execute("SELECT fee FROM internal_data").fetchone()[0]
+                current_year = conn.execute("SELECT year FROM internal_data").fetchone()[0]
 
-            # AUTOMATICALLY CALCULATE THE FEE FOR THE MONTH
-            current_fee = conn.execute("SELECT fee FROM internal_data").fetchone()[0]
-            current_year = conn.execute("SELECT year FROM internal_data").fetchone()[0]
-            
-            count = 0
-            for row in range (1, calendar.monthrange(datetime.date.today().year, student_month)[1] + 1):
-                if datetime.date(current_year, student_month, row).isoweekday() == student_day:
-                    count += 1
+                count = 0
+                for row in range (1, calendar.monthrange(datetime.date.today().year, student_month)[1] + 1):
+                    if datetime.date(current_year, student_month, row).isoweekday() == student_day:
+                        count += 1
 
-            student_fee = count * current_fee
+                student_fee = count * current_fee
 
-            cursor = conn.execute("SELECT student_id FROM student_data")
-            accumulated_student_id = []
-            for row in cursor:
-                accumulated_student_id.append(row[0])
-            student_id = random.randint(1,200)
-            while student_id in accumulated_student_id:
+                cursor = conn.execute("SELECT student_id FROM student_data")
+                accumulated_student_id = []
+                for row in cursor:
+                    accumulated_student_id.append(row[0])
                 student_id = random.randint(1,200)
+                while student_id in accumulated_student_id:
+                    student_id = random.randint(1,200)
 
-            add_student(student_id, student_name.capitalize(), student_age, student_contact, day[student_day], student_class_no, student_fee, student_month)
-            
-            clear()
-            registration_title()
-            proceed = str(input("Would you like to add another student? [ y / n ]: ")).replace(" ","")
-            while input_val(proceed, False, True)[0] or str(input_val(proceed, False, True)[1]) not in ["y", "n"]:
-                registration_title()
-                if proceed == command_to_return:
-                    return 
-                elif student_class_no == command_to_quit:
-                    end_screen()
-                elif student_class_no.isspace() or student_class_no == "":
-                    print("{:^60}".format("[  Come on you didn't even type, try again.  ]\n"))
-                elif input_val(proceed, False, True)[0]:
-                    print("{:^60}".format("[  INVALID INPUT  ]"))
+                add_student(student_id, student_name.capitalize(), student_age, student_contact, day[student_day], student_class_no, student_fee, student_month)
                 
+                clear()
+                registration_title()
                 proceed = str(input("Would you like to add another student? [ y / n ]: ")).replace(" ","")
+                while input_val(proceed, False, True)[0] or str(input_val(proceed, False, True)[1]) not in ["y", "n"]:
+                    registration_title()
+                    if proceed == command_to_return:
+                        return 
+                    elif student_class_no == command_to_quit:
+                        end_screen()
+                    elif student_class_no.isspace() or student_class_no == "":
+                        print("{:^60}".format("[  Come on you didn't even type, try again.  ]\n"))
+                    elif input_val(proceed, False, True)[0]:
+                        print("{:^60}".format("[  INVALID INPUT  ]"))
+                    
+                    proceed = str(input("Would you like to add another student? [ y / n ]: ")).replace(" ","")
 
-            resume_input = str(input_val(proceed, False, True)[1])
+                resume_input = str(input_val(proceed, False, True)[1])

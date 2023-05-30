@@ -1,9 +1,11 @@
+
 from mymodule import *
 from Registration import hey_new_people
 from Student_List import oh_look_students
 from teacher import teacher_see_teacher_do
 
-while 1 == 1:
+decision = -1
+while decision != '0':
     clear()
     print(textwrap.dedent(f"""\
     [Commands] Type them into any input to execute.
@@ -12,7 +14,7 @@ while 1 == 1:
     #quit  =>  To exit anytime
 
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~       
-                         What would you like to do?
+                            What would you like to do?
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     (1) Register Student            | Add a new student
     (2) Student List                | [ View / Edit ] Student list
@@ -29,7 +31,7 @@ while 1 == 1:
         [Commands] Type them into any input to execute.
 
         #back  =>  To return to previous page
-        #quit  =>  To exit anytime"
+        #quit  =>  To exit anytime
 
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~       
                             What would you like to do?
@@ -40,18 +42,19 @@ while 1 == 1:
         (4) Change Fee                  | [ View / Edit ] Fee
 
         [0] Exit                        | ESCAPE
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"""))
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        """))
 
         if decision == command_to_return or decision == command_to_quit:
             end_screen()
         elif decision.isspace() or decision == "":
-            print("{:^60}".format("[  Come on you didn't even type, try again.  ]\n"))
+            print("{:^60}".format("[  Come on you didn't even type, try again.  ]"))
         elif input_val(decision, True, False)[0]:
-            print("{:^60}".format("[  Special characters or alphbets detected, try again.  ]\n"))
+            print("{:^60}".format("[  Special characters or alphbets detected, try again.  ]"))
         elif int(input_val(decision, True, False)[1]) not in range(0,3):
-            print("{:^60}".format("[  Type number between 0 - 4, try again.  ]\n"))
+            print("{:^60}".format("[  Type number between 0 - 4, try again.  ]"))
 
-        decision = str(input("Enter your option : ")).replace(" ","") 
+        decision = str(input("\nEnter your option : ")).replace(" ","") 
 
     clear()
     if decision == '0':
@@ -67,14 +70,16 @@ while 1 == 1:
 
         current_fee = conn.execute("SELECT year, fee FROM internal_data").fetchone()[1]
         print("{:^60}".format(f"Current fee is {locale.currency(current_fee)} per session.\n"))
+        print("{:^60}".format(f"[  Type #back to return  ]\n"))
 
         new_fee = str(input("Enter in new fee (numbers only) : ")).replace(" ","")
         while isfloat(new_fee) == False:
             clear()
             print("{:^60}".format(f"Current fee is {locale.currency(current_fee)} per session.\n"))
+            print("{:^60}".format(f"[  Type #back to return  ]\n"))
 
             if new_fee == command_to_return:
-                 break
+                    break
             elif new_fee == command_to_quit:
                 end_screen()
             elif new_fee.isspace() or new_fee == "":
@@ -106,13 +111,12 @@ while 1 == 1:
             if confirmation == "y":
                 conn.execute(f"UPDATE internal_data set fee = {new_fee}")
                 conn.commit()
-    
+
                 print("{:^60}".format(f"[  Fee changed to {locale.currency(new_fee)}  ]\n"))
                 input("{:^60}".format("PRESS ANY KEY TO RETURN"))
             elif confirmation == "n":
                 print("{:^60}".format("[  Changed Cancelled  ]\n"))
                 input("{:^60}".format("PRESS ANY KEY TO RETURN"))
         
-
 
 

@@ -19,18 +19,14 @@ overline = "\u203E" # Used to make overlines in tables
 day = {1 : "monday", 2 : "tuesday", 3 : "wednesday", 4 : "thursday", 5 : "friday", 6 : "saturday", 7 : "sunday"}
 month = {1 : "january", 2 : "february", 3 : "march", 4 : "april", 5 : "may", 6 : "june", 7 : "july", 8 : "august", 9 : "september", 10 : "october", 11 : "november", 12 : "december"}
 
-past_year = conn.execute("SELECT year FROM internal_data").fetchone()
+past_year = conn.execute("SELECT year FROM internal_data").fetchone()[0]
 
-if past_year[0] < datetime.date.today().year:
+if past_year < datetime.date.today().year:
     conn.execute(f"UPDATE internal_data set 'year' = {datetime.date.today().year}")
     conn.execute("DELETE from student_data")
     for row in month:
         conn.execute(f"DELETE from {month[row]}")
     conn.commit()
-
-cursor = conn.execute("SELECT year, fee FROM internal_data").fetchone()
-current_year = cursor[0]
-current_fee = cursor[1]
 
 def phone_val(number):
     if len(number) == 10:
@@ -63,7 +59,7 @@ def delete_student(id):
     conn = sqlite3.connect("yattabase.db")
     conn.execute(f"DELETE from student_data where student_id = {id}")
     for row in month:
-        conn.execute(f"DELETE from {row[month]} wheres student_id = {id}")
+        conn.execute(f"DELETE from {month[row]} where student_id = {id}")
     conn.commit()
 
 def add_class_schedule(day_no, class_no, start, end, teacher):
@@ -132,18 +128,18 @@ def isfloat(num):
     
 def end_screen():
     clear()
-    print(textwrap.dedent("""
+    input(textwrap.dedent("""
 
                [  PyTutor Helper wishes you a safe travels!  ]          
 
 
     ████████                      ██  ██                                 
     ██                            ██  ██                          ██  ██
-    ██  ▓▓▓▓  ▓▓▓▓▓▓  ██▓▓▓▓  ▓▓▓▓██  ██▓▓▓▓  ▓▓  ██  ▓▓▓▓▓▓      ██  ██
+    ██  ████  ██████  ██████  ██████  ██████  ██  ██  ██████      ██  ██
     ██    ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██           
     ████████  ██████  ██████  ██████  ██████  ██████  ██████   ██        ██
                                                   ██  ██         ████████       
     ████████████████████████████████████████  ██████  ██████       """))
-
     quit()
+
 

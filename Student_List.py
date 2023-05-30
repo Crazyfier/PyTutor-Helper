@@ -607,7 +607,6 @@ def edit_page():
         Contact : {target_student[2]}
 
         Month   : {target_student_month}
-
         Day     : {target_student[3].title()}
         Time    : {target_student_class[0]} - {target_student_class[1]}
         Teacher : {target_student_class[2]}
@@ -782,7 +781,7 @@ def oh_look_students():
                 # REMOVE STUDENT INFO PAGE
                 elif decision == 2:
                     display_student_list()
-                    current_name = conn.execute(f"SELECT name FROM student_data where student_id = {student_number}")
+                    current_name = conn.execute(f"SELECT name FROM student_data where student_id = {student_number}").fetchone()[0]
                     print("{:^60}".format(f"Currently Removing student : {current_name.title()}\n"))
                     
                     confirmation = str(input("Do you want to remove this student? [y / n] : ")).replace(" ","")

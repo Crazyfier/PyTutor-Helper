@@ -385,7 +385,6 @@ def removing_class_tab(target_day):
 
     def display_class_list():
         global use_for_validation
-
         clear()
         print("{:^60}".format(f"[  Currently Removing Class {day[target_day].title()}  ]"))
         print("____________________________________________________________")
@@ -397,68 +396,54 @@ def removing_class_tab(target_day):
             print ("|{:^11}|{:^19}|{:^26}| ".format(row[0], time, row[3]))
         print(overline * 60)
 
-    wish_to_continue = "y"
-    while wish_to_continue == "y":
+
+    display_class_list()
+    print("{:^60}".format(f"[  Type #back to return  ]\n"))
+    class_no = str(input("Enter class number : ")).replace(" ","")
+    while input_val(class_no, True, False)[0] or int(input_val(class_no, True, False)[1]) not in use_for_validation:
         display_class_list()
         print("{:^60}".format(f"[  Type #back to return  ]\n"))
-        class_no = str(input("Enter class number : ")).replace(" ","")
-        while input_val(class_no, True, False)[0] or int(input_val(class_no, True, False)[1]) not in use_for_validation:
-            display_class_list()
-            print("{:^60}".format(f"[  Type #back to return  ]\n"))
-            if class_no == command_to_return:
-                return "y"
-            elif class_no == command_to_quit:
-                end_screen()
-            elif class_no.isspace() or class_no == "":
-                print("{:^60}".format("[  Come on you didn't even type, try again.  ]\n"))
-            elif input_val(class_no, True, False)[0]    :
-                print("{:^60}".format("[  Special characters or alphbets detected, try again.  ]\n"))
-            elif int(input_val(class_no, True, False)[1]) not in use_for_validation:
-                print("{:^60}".format("[  Class number does not exist, try again.  ]\n"))
-
-            class_no = str(input("Enter class number : ")).replace(" ","")
-        class_no = int(input_val(class_no, True, False)[1])
-
-        display_class_list()
-        print("{:^60}".format(f"[  Type #back to return  ]\n"))
-        print("{:^60}".format(f"Are you sure you want to remove class number [ {class_no} ]?\n"))
-        confirmation = str(input(f"                    Enter [y / n] : ")).replace(" ","")
-        while input_val(confirmation, False, True)[0] or str(input_val(confirmation, False, True)[1]) not in ("y","n"):
-            display_class_list()
-            print("{:^60}".format(f"[  Type #back to return  ]\n"))
-            if confirmation == command_to_return:
-                break
-            elif confirmation == command_to_quit:
-                end_screen()
-            elif confirmation.isspace() or confirmation == "":
-                print("{:^60}".format("[  Come on you didn't even type, try again.  ]\n"))
-            elif input_val(confirmation, False, True)[0]:
-                print("{:^60}".format("[  Special characters or alphbets detected, try again.  ]\n"))
-            elif str(input_val(confirmation, False, True)[1]) not in ("y","n"):
-                print("{:^60}".format("[  Type either y or n, try again.  ]\n"))
-
-            print("{:^60}".format(f"Are you sure you want to remove class number [ {class_no} ]?\n"))
-            confirmation = str(input(f"                      Enter [y / n] : ")).replace(" ","")
-        
-        confirmation = str(input_val(confirmation, False, True)[1])
-
-        if confirmation in (command_to_return, "n"):
+        if class_no == command_to_return:
             return "y"
-        else:      
-            delete_class_schedule(target_day, class_no)
+        elif class_no == command_to_quit:
+            end_screen()
+        elif class_no.isspace() or class_no == "":
+            print("{:^60}".format("[  Come on you didn't even type, try again.  ]\n"))
+        elif input_val(class_no, True, False)[0]    :
+            print("{:^60}".format("[  Special characters or alphbets detected, try again.  ]\n"))
+        elif int(input_val(class_no, True, False)[1]) not in use_for_validation:
+            print("{:^60}".format("[  Class number does not exist, try again.  ]\n"))
 
-        
+        class_no = str(input("Enter class number : ")).replace(" ","")
+    class_no = int(input_val(class_no, True, False)[1])
 
-        if len(list(conn.execute(f"SELECT class_no, start, end, teacher from {day[target_day]}_class"))) != 0:
-            wish_to_continue = str(input("\nWanna remove another class? [y / n]: ")).replace(" ","")
-            while input_val(wish_to_continue, False, True)[0] or str(input_val(wish_to_continue, False, True)[1]) not in ("y","n"):
-                wish_to_continue = str(input("... : ")).replace(" ","")
-            wish_to_continue = str(input_val(wish_to_continue, False, True)[1])
+    display_class_list()
+    print("{:^60}".format(f"[  Type #back to return  ]\n"))
+    print("{:^60}".format(f"Are you sure you want to remove class number [ {class_no} ]?\n"))
+    confirmation = str(input(f"                    Enter [y / n] : ")).replace(" ","")
+    while input_val(confirmation, False, True)[0] or str(input_val(confirmation, False, True)[1]) not in ("y","n"):
+        display_class_list()
+        print("{:^60}".format(f"[  Type #back to return  ]\n"))
+        if confirmation == command_to_return:
+            break
+        elif confirmation == command_to_quit:
+            end_screen()
+        elif confirmation.isspace() or confirmation == "":
+            print("{:^60}".format("[  Come on you didn't even type, try again.  ]\n"))
+        elif input_val(confirmation, False, True)[0]:
+            print("{:^60}".format("[  Special characters or alphbets detected, try again.  ]\n"))
+        elif str(input_val(confirmation, False, True)[1]) not in ("y","n"):
+            print("{:^60}".format("[  Type either y or n, try again.  ]\n"))
 
-        else:
-            clear()
-            input("No Classes Detected. Press any key to return to previous page.")
-            wish_to_continue = "n"
+        print("{:^60}".format(f"Are you sure you want to remove class number [ {class_no} ]?\n"))
+        confirmation = str(input(f"                      Enter [y / n] : ")).replace(" ","")
+    
+    confirmation = str(input_val(confirmation, False, True)[1])
+
+    if confirmation in (command_to_return, "n"):
+        return "y"
+    else:      
+        delete_class_schedule(target_day, class_no)
 
     return "y"
 

@@ -94,6 +94,8 @@ def input_student_month():
     """))
 
     student_month = str(input("Enter number of the month : ")).replace(" ","")
+
+    # Validation for user input
     while input_val(student_month, True, False)[0] or int(input_val(student_month, True, False)[1]) not in month:
         registration_title()
         print(f"Name         : {student_name.capitalize()}")

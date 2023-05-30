@@ -611,7 +611,7 @@ def edit_page():
         Time    : {target_student_class[0]} - {target_student_class[1]}
         Teacher : {target_student_class[2]}
             
-        Fee     : {locale.currency(target_student[4])}
+        Fee     : {locale.currency(target_student[5])}
         """))
         print("{:^60}".format("[  Will only change selected category  ]"))  
         print(textwrap.dedent("""\

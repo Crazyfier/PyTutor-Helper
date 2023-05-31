@@ -1,6 +1,6 @@
 from mymodule import *
 
-# For displays
+# For displaying the student list in table
 def display_student_list():
     clear()
     if len(conn.execute("SELECT student_id FROM student_data").fetchall()) == 0:
@@ -39,6 +39,7 @@ def display_student_list():
 
         print(overline*184)
 
+# The edit page of the student list
 def edit_page():
     # Prompt to edit name of student
     def editing_name():
@@ -172,8 +173,7 @@ def edit_page():
        
         clear()
         print()
-        print("{:^60}".format(f"Currently Editting student : {current_name}")) 
-        print("{:^60}".format("[  #back to return  ]\n"))
+        print("{:^60}".format(f"Currently Editting student : {current_name}"))
         print("{:^60}".format("--------- Editing Day --------\n"))
         print("{:^60}".format(f"Switching {current_day.title()} to ..."))
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
@@ -195,18 +195,21 @@ def edit_page():
             padding = ' ' * (13 - day_length)
             print(f"{day_with_number}{padding}", end=' ')
             line_length += day_length + 10
+        valid_day.append(0)
+        print("\n")
+        print("{:^60}".format("[0] Back\n"))
 
         # Chooose which day to change too
-        update_day = str(input("\n\nEnter number of the day : ")).replace(" ","")
+        update_day = str(input("Enter number of the day : ")).replace(" ","")
 
         while input_val(update_day, True, False)[0] or int(input_val(update_day, True, False)[1]) not in valid_day:
             clear()
             print()
             print("{:^60}".format(f"Currently Editting student : {current_name}")) 
             print("{:^60}".format("--------- Editing Day --------\n"))
-            print("{:^60}".format("[  #back to return  ]\n")) 
             print("{:^60}".format(f"Switching {current_day.title()} to ..."))
             print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+            valid_day.remove(0)
             line_length = 0
             for row in valid_day:
                 day_with_number = f"  ({row}) {day[row].capitalize()}"
@@ -219,7 +222,9 @@ def edit_page():
                 padding = ' ' * (13 - day_length)
                 print(f"{day_with_number}{padding}", end=' ')
                 line_length += day_length + 10
+            valid_day.append(0)
             print("\n")
+            print("{:^60}".format("[0] Back\n"))
             if update_day == command_to_return:
                 return "y"
             elif update_day == command_to_quit:
@@ -239,6 +244,8 @@ def edit_page():
             
         update_day = int(input_val(update_day, True, False)[1])
 
+        if update_day == 0:
+            return "y"
 
         # Display Class time to select
         display_class_list(update_day)
@@ -327,7 +334,6 @@ def edit_page():
         while wish_to_continue == "y":
             display_student_list()
             print("{:^60}".format("------------ Select an option ------------"))
-            print("{:^60}".format("[  #back to return  ]"))
             print(textwrap.dedent("""
             (1) Add student to month
             (2) Remove student from month
@@ -340,7 +346,6 @@ def edit_page():
             while input_val(decision, True, False)[0] or int(input_val(decision, True, False)[1]) not in range(0,3):
                 display_student_list()
                 print("{:^60}".format("------------ Select an option ------------"))
-                print("{:^60}".format("[  #back to return  ]"))
                 print(textwrap.dedent("""
                 (1) Add student to month
                 (2) Remove student from month
@@ -372,13 +377,12 @@ def edit_page():
                   (2) February   (5) May     (8) August      (11) November
                   (3) March      (6) June    (9) September   (12) December
                 """))
-
-                add_month = str(input("Enter number of the month : ")).replace(" ","")
+                print("{:^60}".format("[0] Back"))
+                add_month = str(input("\nEnter number of the month : ")).replace(" ","")
                 in_month = []
                 for row in month:
                     if list(conn.execute(f"SELECT student_id, name FROM {month[row]} where student_id = {student_number}")) != []:
                         in_month.append(row)
-            
                 while input_val(add_month, True, False)[0] or int(input_val(add_month, True, False)[1]) not in month or int(input_val(add_month, True, False)[1]) in in_month:
                     display_student_list()
                     print("{:^60}".format("------ Adding into month -----"))
@@ -388,6 +392,7 @@ def edit_page():
                       (2) February   (5) May     (8) August      (11) November
                       (3) March      (6) June    (9) September   (12) December
                     """))
+                    print("{:^60}".format("[0] Back"))
 
                     if add_month == command_to_return:
                         return "y"
@@ -400,12 +405,14 @@ def edit_page():
                     elif int(input_val(add_month, True, False)[1]) in in_month:
                         print("{:^60}".format(f"[  Already added to {month[int(add_month)].title()}, try again.  ]"))
                     elif int(input_val(add_month, True, False)[1]) not in month:
-                        print("{:^60}".format("[  Enter numbers between 1 and 12, try again.  ]"))
+                        if int(input_val(add_month, True, False)[1]) == 0:
+                            return "y"
+                        else:
+                            print("{:^60}".format("[  Enter numbers between 1 and 12, try again.  ]"))
 
                     add_month = str(input("\nEnter number of the month : ")).replace(" ","")
                 
                 add_month = int(input_val(add_month, True, False)[1])
-                
                 # Calculate the fee needed to add onto the exisiting fee
                 day_category = {"monday" : 1, "tuesday" : 2, "wednesday" : 3, "thursday" : 4, "friday" : 5, "saturday" : 6, "sunday" : 7}
                 fee_for_calc = conn.execute(f"SELECT fee FROM student_data where student_id = {student_number}").fetchone()[0]
@@ -446,6 +453,7 @@ def edit_page():
                     padding = ' ' * (14 - day_length)
                     print(f"{day_with_number}{padding}", end=' ')
                     line_length += day_length + 10
+                temp_var_month.append(0)
                 print("\n")
                 print("{:^60}".format("[0] Back\n"))
                 remove_month = str(input("Enter number : ")).replace(" ","")
@@ -454,6 +462,7 @@ def edit_page():
                     display_student_list()
                     print("{:^60}".format("------ Remove from month -----"))
                     print("\n~~~~~~~~~~~~~~~~~~~~~~~ Select month ~~~~~~~~~~~~~~~~~~~~~~~")
+                    temp_var_month.remove(0)
                     line_length = 0
                     for row in temp_var_month:
                         day_with_number = f"({row}) {month[row].capitalize()}"
@@ -466,6 +475,7 @@ def edit_page():
                         padding = ' ' * (14 - day_length)
                         print(f"{day_with_number}{padding}", end=' ')
                         line_length += day_length + 10
+                    temp_var_month.append(0)
                     print("\n")
                     print("{:^60}".format("[0] Back\n"))
 
@@ -556,14 +566,16 @@ def edit_page():
         else:
             clear()
             print()
-            print("{:^60}".format(f"Current Fee : {locale.currency(fee)}\n"))
+            print("{:^60}".format(f"Current Fee : {locale.currency(fee)}"))
+            print("{:^60}".format(f"[  #back to return  ]\n"))
             print("{:^60}".format("[  Enter ammount  ]\n"))
 
             ammount_entered = str(input("Accepts numbers only : ")).replace(" ","")
             while isfloat(ammount_entered) == False:
                 clear()
                 print()
-                print("{:^60}".format(f"Current Fee : {locale.currency(fee)}\n"))
+                print("{:^60}".format(f"Current Fee : {locale.currency(fee)}"))
+                print("{:^60}".format(f"[  #back to return  ]\n"))
                 print("{:^60}".format("[  Enter ammount  ]\n"))
 
                 if ammount_entered == command_to_return:
@@ -685,9 +697,9 @@ def edit_page():
 
 
 
-
-def oh_look_students():
-    global student_number, student, current_fee, current_year
+# Main part of the student list function
+def Student_List_Page():
+    global student_number, current_fee, current_year
 
     current_fee = conn.execute("SELECT fee FROM internal_data").fetchone()[0]
     current_year = conn.execute("SELECT year FROM internal_data").fetchone()[0]

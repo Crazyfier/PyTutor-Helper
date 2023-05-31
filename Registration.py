@@ -1,12 +1,15 @@
 from mymodule import *
 
-# PROMPT USER TO INPUT THEIR NAME
+# Used for displaying the registraition title
 def registration_title():
     clear()
     print("")
     print("{:^60}".format(f"-------- Registration --------"))
     print("{:^60}".format(f"[  #back to return  ]\n"))
-        
+
+
+
+# PROMPT USER TO INPUT THEIR NAME  
 def input_student_name():
     global student_name
     registration_title()
@@ -245,25 +248,20 @@ def input_student_class_no():
 
 
 
-def hey_new_people():
+# Main part of the registration function
+def Registration_Page():
     resume_input = "y"
     while resume_input == "y":
-
         clear()
-        
         count = 0
         for row in day:
             if len(list(conn.execute(f"SELECT class_no from {day[row]}_class"))) != 0:
                 count += 1
-
-        
         if count == 0:
             registration_title()
             input("[ There are no classes available to register the student. ]\n\n           [ Please add a class to proceed. ]\n\n               PRESS ANY KEY TO RETURN")
-
         if input_student_name() == "n" or input_student_age() == "n" or input_student_contact() == "n" or input_student_month() == "n":
             resume_input = "n"
-
         else:
             empty = True
             while empty == True:
@@ -277,9 +275,7 @@ def hey_new_people():
                         break
                     elif type(value) == bool:
                         empty = value
-            
             if resume_input != "n":
-                # AUTOMATICALLY CALCULATE THE FEE FOR THE MONTH
                 current_fee = conn.execute("SELECT fee FROM internal_data").fetchone()[0]
                 current_year = conn.execute("SELECT year FROM internal_data").fetchone()[0]
 

@@ -28,12 +28,15 @@ if past_year < datetime.date.today().year:
         conn.execute(f"DELETE from {month[row]}")
     conn.commit()
 
+
+# Function used for validating phone number input
 def phone_val(number):
     if len(number) == 10:
         return number[0] == "0" and number.isnumeric()
     else:
         return False
 
+# Function used for multipurpose validation
 def input_val(input, IfWord, IfNum):
     if input.isspace() or input == "":
         return True, input
@@ -41,6 +44,7 @@ def input_val(input, IfWord, IfNum):
         tempvar = input.replace(" ", "")
         return (tempvar.isalpha() == IfWord or tempvar.isnumeric() == IfNum), input.replace("  "," ")
 
+# Function used for adding student info into the database
 def add_student(student_id, name, age, contact, day, class_no, fee, month_no):
     conn = sqlite3.connect("yattabase.db")
     conn.execute(f"INSERT INTO student_data (student_id, name, age, contact, day, class_no, fee) \
@@ -50,11 +54,13 @@ def add_student(student_id, name, age, contact, day, class_no, fee, month_no):
 
     conn.commit()
 
+# Function used for updating student info
 def update_student(id, target, correction):
     conn = sqlite3.connect("yattabase.db")
     conn.execute(f"UPDATE student_data set '{target}' = '{correction}' where student_id = {id}")
     conn.commit()
 
+# Function used for deleting student from database
 def delete_student(id):
     conn = sqlite3.connect("yattabase.db")
     conn.execute(f"DELETE from student_data where student_id = {id}")
@@ -62,22 +68,26 @@ def delete_student(id):
         conn.execute(f"DELETE from {month[row]} where student_id = {id}")
     conn.commit()
 
+# Function used for adding new classes
 def add_class_schedule(day_no, class_no, start, end, teacher):
         conn = sqlite3.connect("yattabase.db")
         conn.execute(f"INSERT INTO {day[day_no]}_class (class_no, start, end, teacher) \
             VALUES ('{class_no}', '{start}', '{end}', '{teacher}')")
         conn.commit()
 
+# Function used for updating class info
 def update_class_schedule(day_no, class_no, target, correction):
     conn = sqlite3.connect("yattabase.db")
     conn.execute(f"UPDATE {day[day_no]}_class set {target} = '{correction}' where class_no = {class_no}")
     conn.commit()
 
+# Function used for deleting classes
 def delete_class_schedule(day_no, class_no):
     conn = sqlite3.connect("yattabase.db")
     conn.execute(f"DELETE from {day[day_no]}_class where class_no = {class_no}")
     conn.commit()
 
+# Function used to validate time overlap
 def time_validator(input_1_start, input_1_end, input_2_start, input_2_end):
     
     def check_overlap(input_1_start, input_1_end, input_2_start, input_2_end):
@@ -119,6 +129,7 @@ def time_validator(input_1_start, input_1_end, input_2_start, input_2_end):
     else:
         return False
 
+# Function used to validate whether input is a float
 def isfloat(num):
     try:
         float(num)
@@ -126,6 +137,7 @@ def isfloat(num):
     except ValueError:
         return False
     
+# Function used to terminate program and display end screen
 def end_screen():
     clear()
     input(textwrap.dedent("""

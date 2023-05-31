@@ -1,14 +1,12 @@
 from mymodule import *
 
-# MODULE HERE FOR EASY ACCESS WITHOUT LOOKING THROUGH MAIN FUNCTION
-
-# THE DISPLAY OF ALL EXISTING CLASSES WHEN USER FIRST SEE THE TAB
+# Display all existing classes empty or not
 def main_menu_of_teacher_tab():
     global decision
     global valid_day
 
     valid_day = []
-    print("----------------- Class Schedule Handling -----------------\n")
+    print("\n----------------- Class Schedule Handling -----------------\n")
     for row in day:
         print("{:^60}".format(f"[  {day[row].title()}  ]"))
         if len(list(conn.execute(f"SELECT class_no, start, end, teacher from {day[row]}_class"))) == 0:
@@ -46,7 +44,7 @@ def main_menu_of_teacher_tab():
     while input_val(decision, True, False)[0] or int(input_val(decision, True, False)[1]) not in option:
         clear()
         valid_day = []
-        print("----------------- Class Schedule Handling -----------------\n")
+        print("\n----------------- Class Schedule Handling -----------------\n")
         for row in day:
             print("{:^60}".format(f"[  {day[row].title()}  ]"))
             if len(list(conn.execute(f"SELECT class_no, start, end, teacher from {day[row]}_class"))) == 0:
@@ -96,6 +94,7 @@ def main_menu_of_teacher_tab():
 
     return decision
 
+# Display the days that are ready to be editted
 def display_available_days_to_edit():
     global target_day
     clear()
@@ -113,14 +112,16 @@ def display_available_days_to_edit():
         padding = ' ' * (13 - day_length)
         print(f"{day_with_number}{padding}", end=' ')
         line_length += day_length + 10
+    valid_day.append(0)
     print("\n")
-    print("{:^60}".format("#back to return"))
+    print("{:^60}".format("[0] Back"))
 
     target_day = str(input("\nEnter one of the number above: ")).replace(" ","")
     while input_val(target_day, True, False)[0] or int(input_val(target_day, True, False)[1]) not in valid_day:
         clear()
         print()
         print("~~~~~~~~~~~~~~~~~~~~~~~ Day Selection ~~~~~~~~~~~~~~~~~~~~~~")
+        valid_day.remove(0)
         line_length = 0
         for row in valid_day:
             day_with_number = f"  ({row}) {day[row].capitalize()}"
@@ -133,51 +134,51 @@ def display_available_days_to_edit():
             padding = ' ' * (13 - day_length)
             print(f"{day_with_number}{padding}", end=' ')
             line_length += day_length + 10
+        valid_day.append(0)
         print("\n")
-        print("{:^60}".format("#back to return"))
+        print("{:^60}".format("[0] Back\n"))
 
         if target_day == command_to_return:
             return "y"
-        
         elif target_day == command_to_quit:
             end_screen()
         elif target_day.isspace() or target_day == "":
-            print("{:^60}".format("\n[  Come on you didn't even type, try again.  ]\n"))
+            print("{:^60}".format("[  Come on you didn't even type, try again.  ]\n"))
         elif input_val(target_day, True, False)[0]:
-            print("{:^60}".format("\n[  Special characters or alphabets detected, try again.  ]\n"))
+            print("{:^60}".format("[  Special characters or alphabets detected, try again.  ]\n"))
         elif int(input_val(target_day, True, False)[1]) not in valid_day:
-            print("{:^60}".format("\n[  Select the one of the days displayed, try again.  ]\n"))
+            print("{:^60}".format("[  Select the one of the days displayed, try again.  ]\n"))
 
         target_day = str(input("Enter one of the number above: ")).replace(" ","")
 
     target_day = int(input_val(target_day, True, False)[1])
+
     if target_day == 0:
         return "y"
-
-def display_class_list(target_day):
-    global class_no_for_validation
-    clear()
-    class_no_for_validation = []
-    print("{:^60}".format(f"[  Adding class for {day[target_day].title()}  ]"))
-    if len(list(conn.execute(f"SELECT class_no, start, end, teacher from {day[target_day]}_class"))) == 0:
-        print("{:^60}".format("[  *INSERT TUMBLEWEED*  ]\n"))
-    else:
-        print("____________________________________________________________")
-        print ("\x1B[4m|{:^11}|{:^20}|{:^25}|\x1B[0m".format("Class No.", "Time", "Teacher"))
-        
-        for row in conn.execute(f"SELECT class_no, start, end, teacher from {day[target_day]}_class ORDER BY class_no ASC"):
-            class_no_for_validation.append(row[0])
-            time = row[1] + " - " + row[2]
-            print ("|{:^11}|{:^20}|{:^25}| ".format(row[0], time, row[3]))
-        print(overline * 60)
     
-    print("{:^60}".format("[  #back to return  ]\n"))
-    
-
-
-
-# THIS IS WHERE USER ADD CLASSES
+# The tab where user gets to add classes
 def adding_new_class_tab():
+    # Display class list for adding classes
+    def display_class_list(target_day):
+        global class_no_for_validation
+        clear()
+        class_no_for_validation = []
+        print()
+        print("{:^60}".format(f"[  Adding class for {day[target_day].title()}  ]"))
+        if len(list(conn.execute(f"SELECT class_no, start, end, teacher from {day[target_day]}_class"))) == 0:
+            print("{:^60}".format("[  *INSERT TUMBLEWEED*  ]\n"))
+        else:
+            print("____________________________________________________________")
+            print ("\x1B[4m|{:^11}|{:^20}|{:^25}|\x1B[0m".format("Class No.", "Time", "Teacher"))
+            
+            for row in conn.execute(f"SELECT class_no, start, end, teacher from {day[target_day]}_class ORDER BY class_no ASC"):
+                class_no_for_validation.append(row[0])
+                time = row[1] + " - " + row[2]
+                print ("|{:^11}|{:^20}|{:^25}| ".format(row[0], time, row[3]))
+            print(overline * 60)
+        
+        print("{:^60}".format("[  #back to return  ]\n"))
+    
     clear()
     print("{:^60}".format("[  Add New Classes  ]"))
     print(textwrap.dedent("""
@@ -185,7 +186,7 @@ def adding_new_class_tab():
         (1) Monday  (2) Tuesday  (3) Wednesday  (4) Thursday     
         (5) Friday  (6) Satruday (7) Sunday  
         """))
-    print("{:^60}".format("#back to return"))
+    print("{:^60}".format("[0] Back"))
     target = str(input("\nEnter one of the number above : ")).replace(" ","")
     while input_val(target, True, False)[0] or int(input_val(target, True, False)[1]) not in range(0, 8):
         clear()
@@ -195,7 +196,7 @@ def adding_new_class_tab():
             (1) Monday  (2) Tuesday  (3) Wednesday  (4) Thursday     
             (5) Friday  (6) Satruday (7) Sunday  
         """))
-        print("{:^60}".format("#back to return\n"))
+        print("{:^60}".format("[0] Back\n"))
 
         if target == command_to_return:
             return "y"
@@ -240,8 +241,8 @@ def adding_new_class_tab():
         # PROMPT USER TO INPUT HOUR, MINUTE AND AM/PM
         Input = ["Start", "End"]
         overlap = True
-        count = 1
         while overlap == True:
+            count = 1
             for var in Input:
                 def temp_display():
                     display_class_list(target)
@@ -251,7 +252,6 @@ def adding_new_class_tab():
                     print("")
                     print("{:^60}".format(f"-------- {var} of class --------"))
                     
-
                 temp_display()
                 hour = str(input("Enter hour [1 - 12] : ")).replace(" ","")
                 while input_val(hour, True, False)[0] or int(input_val(hour, True, False)[1]) not in range(1, 13):
@@ -337,7 +337,6 @@ def adding_new_class_tab():
 
         # PROMPT USER TO INPUT TEACHERS NAME
         display_class_list(target)
-
         print(f"Class No. : {class_no}")
         print(f"Time      : {start_input} - {end_input}")
 
@@ -358,13 +357,12 @@ def adding_new_class_tab():
 
             teacher_name = str(input("\nTeacher name: "))
 
-
         add_class_schedule(target, class_no, start_input, end_input, teacher_name)
-    
+
+
         display_class_list(target)
         wish_to_continue = str(input("Would you like to add another class? [ y / n ]: ")).replace(" ","")
         while input_val(wish_to_continue, False, True)[0] or str(input_val(wish_to_continue, False, True)[1]) not in ["y", "n"]:
-            
             display_class_list(target)
             if wish_to_continue == command_to_return:
                 return "n"
@@ -380,10 +378,10 @@ def adding_new_class_tab():
 
     return "y"
 
-# THIS IS WHERE USER REMOVES EXISTING CLASSES
+# The tab where user gets to remove classes
 def removing_class_tab(target_day):
-
-    def display_class_list():
+    # Display class list for removing classes
+    def display__remove_class_list():
         global use_for_validation
         clear()
         print("{:^60}".format(f"[  Currently Removing Class {day[target_day].title()}  ]"))
@@ -395,14 +393,12 @@ def removing_class_tab(target_day):
             time = row[1] + " - " + row[2]
             print ("|{:^11}|{:^19}|{:^26}| ".format(row[0], time, row[3]))
         print(overline * 60)
+        print("{:^60}".format(f"[  #back to return  ]\n"))
 
-
-    display_class_list()
-    print("{:^60}".format(f"[  Type #back to return  ]\n"))
+    display__remove_class_list()
     class_no = str(input("Enter class number : ")).replace(" ","")
     while input_val(class_no, True, False)[0] or int(input_val(class_no, True, False)[1]) not in use_for_validation:
-        display_class_list()
-        print("{:^60}".format(f"[  Type #back to return  ]\n"))
+        display__remove_class_list()
         if class_no == command_to_return:
             return "y"
         elif class_no == command_to_quit:
@@ -417,13 +413,11 @@ def removing_class_tab(target_day):
         class_no = str(input("Enter class number : ")).replace(" ","")
     class_no = int(input_val(class_no, True, False)[1])
 
-    display_class_list()
-    print("{:^60}".format(f"[  Type #back to return  ]\n"))
+    display__remove_class_list()
     print("{:^60}".format(f"Are you sure you want to remove class number [ {class_no} ]?\n"))
     confirmation = str(input(f"                    Enter [y / n] : ")).replace(" ","")
     while input_val(confirmation, False, True)[0] or str(input_val(confirmation, False, True)[1]) not in ("y","n"):
-        display_class_list()
-        print("{:^60}".format(f"[  Type #back to return  ]\n"))
+        display__remove_class_list()
         if confirmation == command_to_return:
             break
         elif confirmation == command_to_quit:
@@ -447,9 +441,10 @@ def removing_class_tab(target_day):
 
     return "y"
 
-# THIS IS WHERE USER EDITS THE EXISTING CLASSES
+# The tab where user edits the existing page
 def editing_class_tab(target_day):
-    def display_edit_class():
+    # Display the class list for the edit page
+    def display_edit_class_list():
         global use_for_validation
         clear()
         print("{:^59}".format(f"[{day[target_day].title()}]"))
@@ -463,14 +458,15 @@ def editing_class_tab(target_day):
             print ("|{:^11}|{:^20}|{:^25}| ".format(row[0], time, row[3]))
 
         print(overline * 60)
+        print("{:^60}".format(f"[  #back to return  ]\n"))
 
     wish_to_continue = "y"
     while wish_to_continue == "y":
-        display_edit_class()
+        display_edit_class_list()
         class_no = str(input("Enter class number : ")).replace(" ","")
 
         while input_val(class_no, True, False)[0] or int(input_val(class_no, True, False)[1]) not in use_for_validation:
-            display_edit_class()
+            display_edit_class_list()
             if class_no == command_to_return:
                 return "y"
             elif class_no == command_to_quit:
@@ -488,23 +484,27 @@ def editing_class_tab(target_day):
 
         use_for_validation.remove(class_no)
         
-        display_edit_class()
-        print(textwrap.dedent("""
-        ~~~~~~~~~~~~~~~~~~~~~  Option Selection  ~~~~~~~~~~~~~~~~~~~~~~~~
+        display_edit_class_list()
+        print(textwrap.dedent("""\
+        ~~~~~~~~~~~~~~~~~~~~  Option Selection  ~~~~~~~~~~~~~~~~~~~~
         (1) Class Number       
         (2) Time
         (3) Teacher        
+
+        [0] Back
         """))
 
         target_option = str(input("Enter the category (number) you wish to change : ")).replace(" ","")
         
-        while input_val(target_option, True, False)[0] or int(input_val(target_option, True, False)[1]) not in range(1,4):
-            display_edit_class()
-            print(textwrap.dedent("""
-            ~~~~~~~~~~~~~~~~~~~~~  Option Selection  ~~~~~~~~~~~~~~~~~~~~~~~~
+        while input_val(target_option, True, False)[0] or int(input_val(target_option, True, False)[1]) not in range(0,4):
+            display_edit_class_list()
+            print(textwrap.dedent("""\
+            ~~~~~~~~~~~~~~~~~~~~  Option Selection  ~~~~~~~~~~~~~~~~~~~~
             (1) Class Number       
             (2) Time
-            (3) Teacher        
+            (3) Teacher
+                        
+            [0] Back
             """))
             if target_option == command_to_return:
                 return "y"
@@ -514,16 +514,21 @@ def editing_class_tab(target_day):
                 print("{:^60}".format("[  Come on you didn't even type, try again.  ]\n"))
             elif input_val(target_option, True, False)[0]:
                 print("{:^60}".format("[  Special characters or alphabets detected, try again.  ]\n"))
-            elif int(input_val(target_option, True, False)[1]) not in range(1,4):
+            elif int(input_val(target_option, True, False)[1]) not in range(0,4):
                 print("{:^60}".format("[  Enter number between 1 - 3, try again.  ]\n"))
 
             target_option = str(input("Enter the category (number) you wish to change : ")).replace(" ","")
 
         target_option = int(input_val(target_option, True, False)[1])
 
-        if target_option == 1:
-            edited_class_no = str(input("Enter new class number: ")).replace(" ","")
+        if target_option == 0:
+            return "y"
+
+        elif target_option == 1:
+            display_edit_class_list()
+            edited_class_no = str(input("Enter new class number : ")).replace(" ","")
             while input_val(edited_class_no, True, False)[0] or int(input_val(edited_class_no, True, False)[1]) in use_for_validation:
+                display_edit_class_list()
                 if edited_class_no == command_to_return:
                     return "y"
                 elif edited_class_no == command_to_quit:
@@ -535,7 +540,7 @@ def editing_class_tab(target_day):
                 elif int(input_val(edited_class_no, True, False)[1]) in use_for_validation:
                     print("{:^60}".format("[  Number taken, try again.  ]\n"))
                 
-                edited_class_no = str(input("Invalid input or class number taken, try again: ")).replace(" ","")
+                edited_class_no = str(input("Enter new class number : ")).replace(" ","")
 
             edited_class_no = int(input_val(edited_class_no, True, False)[1])
         
@@ -544,15 +549,14 @@ def editing_class_tab(target_day):
         elif target_option == 2:
             Input = ["Start", "End"]
             overlap = True
-            count = 1
             while overlap == True:
+                count = 1
                 for var in Input:
                     def temp_display():
-                        display_class_list(target_day)
-                        print(f"Class number : {class_no}")
+                        display_edit_class_list()
+                        print("{:^60}".format(f"Currently editting class [ {class_no} ]\n"))
                         if count == 2:
-                            print(f"Start of Class   : {start_input}")
-                        print("")
+                            print(f"Start of Class   : {start_input}\n")
                         print("{:^60}".format(f"-------- {var} of class --------"))
                         
                     temp_display()
@@ -627,7 +631,7 @@ def editing_class_tab(target_day):
                     for row in conn.execute(f"SELECT start, end from {day[target_day]}_class"):
                         if time_validator(start_input, end_input, row[0], row[1]):
                             clear()
-                            display_class_list(target_day)
+                            display_edit_class_list()
                             print("{:^60}".format("[  Error  ]"))
                             print("{:^60}".format("[  Time inputed overlaps with existing classes, try again.  ]\n"))
                             input("{:^60}".format("PRESS ANY KEY TO RETRY"))
@@ -640,20 +644,45 @@ def editing_class_tab(target_day):
             update_class_schedule(target_day, class_no, "end", end_input)
 
         elif target_option == 3:
-            teacher_name = str(input("\nNew teacher name: "))
+            display_edit_class_list()
+            teacher_name = str(input("\nNew teacher name : "))
             while input_val(teacher_name, False, True)[0]:
+                display_edit_class_list()
                 if teacher_name == command_to_return:
                     return "n"
+                elif teacher_name == command_to_quit:
+                    end_screen()
                 elif teacher_name.isspace() or teacher_name == "":
-                    teacher_name = str(input("Come on you didn't even type, try again: "))
-                else:
-                    teacher_name = str(input("Invalid input, try again: "))
+                    print("{:^60}".format("[  Come on you didn't even type, try again.  ]\n"))
+                elif input_val(teacher_name, False, True)[0]:
+                    print("{:^60}".format("[  Special characters or numbers detected, try again.  ]\n"))
+                teacher_name = str(input("New teacher name : "))
 
             update_class_schedule(target_day, class_no, "teacher", teacher_name)
 
+        display_edit_class_list()
+        wish_to_continue = str(input("Would you like to edit another class? [ y / n ]: ")).replace(" ","")
+        while input_val(wish_to_continue, False, True)[0] or str(input_val(wish_to_continue, False, True)[1]) not in ["y", "n"]:
+            display_edit_class_list()
+            if wish_to_continue == command_to_return:
+                return "n"
+            elif wish_to_continue == command_to_quit:
+                end_screen()
+            elif wish_to_continue.isspace() or wish_to_continue == "":
+                print("{:^60}".format("[  Come on you didn't even type, try again.  ]\n"))
+            elif input_val(wish_to_continue, False, True)[0]:
+                print("{:^60}".format("[  Special characters or numbers detected, try again.  ]\n"))
+            elif str(input_val(wish_to_continue, False, True)[1]) not in ["y", "n"]:
+                print("{:^60}".format("[  Type either y or n, try again.  ]\n"))
 
-# MAIN MODULE OF TEACHER TAB WHERE ALL THE COMMANDS ARE EXECUTED
-def teacher_see_teacher_do(): 
+            wish_to_continue = str(input("Would you like to edit another class? [ y / n ]: ")).replace(" ","")
+
+    return "y"
+
+
+
+# Main part of the class handling function
+def Class_Handling_Page(): 
     resume_input = "y"
 
     while resume_input == "y":

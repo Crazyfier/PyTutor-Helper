@@ -1,9 +1,8 @@
 
 from mymodule import *
-from Registration import hey_new_people
-from Student_List import oh_look_students
-from teacher import teacher_see_teacher_do
-
+from Registration import Registration_Page
+from Student_List import Student_List_Page
+from teacher import Class_Handling_Page
 decision = -1
 while decision != '0':
     clear()
@@ -60,11 +59,13 @@ while decision != '0':
     if decision == '0':
         end_screen()
     elif decision == '1' :
-        hey_new_people()
+        Registration_Page()
     elif decision == '2' :
-        oh_look_students()
+        Student_List_Page()
     elif decision == '3' :
-        teacher_see_teacher_do()
+        Class_Handling_Page()
+
+    # Updating the fee
     elif decision == '4' :
         clear()
 

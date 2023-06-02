@@ -17,7 +17,7 @@ def main_menu_of_teacher_tab():
             print ("\x1B[4m|{:^11}|{:^20}|{:^25}|\x1B[0m".format("Class No.", "Time", "Teacher"))
             for row in conn.execute(f"SELECT class_no, start, end, teacher from {day[row]}_class ORDER BY class_no ASC"):
                 time = row[1] + " - " + row[2]
-                print ("|{:^11}|{:^20}|{:^25}| ".format(row[0], time, row[3]))
+                print ("|{:^11}|{:^20}|{:^25}| ".format(row[0], time, row[3].title()))
 
             print(overline * 60)
 
@@ -55,7 +55,7 @@ def main_menu_of_teacher_tab():
                 print ("\x1B[4m|{:^11}|{:^20}|{:^25}|\x1B[0m".format("Class No.", "Time", "Teacher"))
                 for row in conn.execute(f"SELECT class_no, start, end, teacher from {day[row]}_class ORDER BY class_no ASC"):
                     time = row[1] + " - " + row[2]
-                    print ("|{:^11}|{:^20}|{:^25}| ".format(row[0], time, row[3]))
+                    print ("|{:^11}|{:^20}|{:^25}| ".format(row[0], time, row[3].title()))
                 print(overline * 60)
 
         if len(valid_day) == 0:
@@ -102,10 +102,10 @@ def display_available_days_to_edit():
     print("~~~~~~~~~~~~~~~~~~~~~~~ Day Selection ~~~~~~~~~~~~~~~~~~~~~~")
     line_length = 0
     for row in valid_day:
-        day_with_number = f"  ({row}) {day[row].capitalize()}"
+        day_with_number = f" ({row}) {day[row].capitalize()}"
         day_length = len(day_with_number)
 
-        if line_length + day_length > 60:
+        if line_length + day_length > 85:
             print()
             line_length = 0
 
@@ -124,10 +124,10 @@ def display_available_days_to_edit():
         valid_day.remove(0)
         line_length = 0
         for row in valid_day:
-            day_with_number = f"  ({row}) {day[row].capitalize()}"
+            day_with_number = f" ({row}) {day[row].capitalize()}"
             day_length = len(day_with_number)
 
-            if line_length + day_length > 60:
+            if line_length + day_length > 85:
                 print()
                 line_length = 0
 
@@ -174,7 +174,7 @@ def adding_new_class_tab():
             for row in conn.execute(f"SELECT class_no, start, end, teacher from {day[target_day]}_class ORDER BY class_no ASC"):
                 class_no_for_validation.append(row[0])
                 time = row[1] + " - " + row[2]
-                print ("|{:^11}|{:^20}|{:^25}| ".format(row[0], time, row[3]))
+                print ("|{:^11}|{:^20}|{:^25}| ".format(row[0], time, row[3].title()))
             print(overline * 60)
         
         print("{:^60}".format("[  #back to return  ]\n"))
@@ -391,7 +391,7 @@ def removing_class_tab(target_day):
         for row in conn.execute(f"SELECT class_no, start, end, teacher from {day[target_day]}_class ORDER BY class_no ASC"):
             use_for_validation.append(row[0])
             time = row[1] + " - " + row[2]
-            print ("|{:^11}|{:^19}|{:^26}| ".format(row[0], time, row[3]))
+            print ("|{:^11}|{:^19}|{:^26}| ".format(row[0], time, row[3].title()))
         print(overline * 60)
         print("{:^60}".format(f"[  #back to return  ]\n"))
 
@@ -455,7 +455,7 @@ def editing_class_tab(target_day):
         for row in conn.execute(f"SELECT class_no, start, end, teacher from {day[target_day]}_class ORDER BY class_no ASC"):
             use_for_validation.append(row[0])
             time = row[1] + " - " + row[2]
-            print ("|{:^11}|{:^20}|{:^25}| ".format(row[0], time, row[3]))
+            print ("|{:^11}|{:^20}|{:^25}| ".format(row[0], time, row[3].title()))
 
         print(overline * 60)
         print("{:^60}".format(f"[  #back to return  ]\n"))

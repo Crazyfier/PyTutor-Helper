@@ -33,6 +33,8 @@ def input_student_name():
 # PROMPT USER TO INPUT THEIR AGE
 def input_student_age():
     global student_age
+    registration_title()
+    print(f"Name : {student_name.capitalize()}")
     student_age = str(input("Age  : ")).replace(" ","")
     while input_val(student_age, True, False)[0] or int(input_val(student_age, False, True)[1]) > 50:
         registration_title()
@@ -143,11 +145,21 @@ def input_student_day():
     print(f"Month        : {month[student_month].capitalize()}")
 
     print("\n~~~~~~~~~~~~~~~~~~~~~~~ Select a Day ~~~~~~~~~~~~~~~~~~~~~~~")
+    line_length = 0
     for row in valid_day:
-        print(f"({row}) {day[row].title()}")
+        day_with_number = f" ({row}) {day[row].capitalize()}"
+        day_length = len(day_with_number)
 
-    student_day = str(input("\nEnter number of the day : ")).replace(" ","")
-    while input_val(student_day, True, False)[0] or int(input_val(student_day, True, False)[1]) not in day:
+        if line_length + day_length > 85:
+            print()
+            line_length = 0
+
+        padding = ' ' * (13 - day_length)
+        print(f"{day_with_number}{padding}", end=' ')
+        line_length += day_length + 10
+
+    student_day = str(input("\n\nEnter number of the day : ")).replace(" ","")
+    while input_val(student_day, True, False)[0] or int(input_val(student_day, True, False)[1]) not in valid_day:
         registration_title()
         print(f"Name         : {student_name.capitalize()}")
         print(f"Age          : {student_age}")
@@ -155,10 +167,19 @@ def input_student_day():
         print(f"Month        : {month[student_month].capitalize()}")
 
         print("\n~~~~~~~~~~~~~~~~~~~~~~~ Select a Day ~~~~~~~~~~~~~~~~~~~~~~~")
+        line_length = 0
         for row in valid_day:
-            print(f"({row}) {day[row].title()}")
-        print("")
+            day_with_number = f" ({row}) {day[row].capitalize()}"
+            day_length = len(day_with_number)
 
+            if line_length + day_length > 85:
+                print()
+                line_length = 0
+
+            padding = ' ' * (13 - day_length)
+            print(f"{day_with_number}{padding}", end=' ')
+            line_length += day_length + 10
+        print("\n")
         if student_day == command_to_return:
             return "n"
         elif student_day == command_to_quit:
@@ -167,8 +188,8 @@ def input_student_day():
             print("{:^60}".format("[  Come on you didn't even type, try again.  ]"))
         elif input_val(student_day, True, False)[0]:
             print("{:^60}".format("[  Special characters or alphbets detected, try again.  ]"))
-        else:
-            print("{:^60}".format("[  Enter numbers between 1 and 7, try again.  ]"))
+        elif int(input_val(student_day, True, False)[1]) not in valid_day:
+            print("{:^60}".format("[  No classes on selected day, try again.  ]"))
 
         student_day = str(input("\nEnter number of the day : ")).replace(" ","")
         

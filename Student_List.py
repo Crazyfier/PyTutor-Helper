@@ -185,10 +185,10 @@ def edit_page():
         # Display Available day for selection
         line_length = 0
         for row in valid_day:
-            day_with_number = f"  ({row}) {day[row].capitalize()}"
+            day_with_number = f" ({row}) {day[row].capitalize()}"
             day_length = len(day_with_number)
 
-            if line_length + day_length > 60:
+            if line_length + day_length > 85:
                 print()
                 line_length = 0
 
@@ -212,10 +212,10 @@ def edit_page():
             valid_day.remove(0)
             line_length = 0
             for row in valid_day:
-                day_with_number = f"  ({row}) {day[row].capitalize()}"
+                day_with_number = f" ({row}) {day[row].capitalize()}"
                 day_length = len(day_with_number)
 
-                if line_length + day_length > 60:
+                if line_length + day_length > 85:
                     print()
                     line_length = 0
 
@@ -280,36 +280,35 @@ def edit_page():
         def display_class_list(target_day):
             global class_no_for_validation
             clear()
-            print("{:^60}".format(f"{target_day[0].title()}"))
+            print("{:^60}".format(f"{target_day.title()}"))
             print("____________________________________________________________")
             print ("\x1B[4m|{:^11}|{:^20}|{:^25}|\x1B[0m".format("Class No.", "Time", "Teacher"))
             
             class_no_for_validation = []
-            for row in conn.execute(f"SELECT class_no, start, end, teacher from {target_day[0]}_class ORDER BY class_no ASC"):
+            for row in conn.execute(f"SELECT class_no, start, end, teacher from {target_day}_class ORDER BY class_no ASC"):
                 class_no_for_validation.append(row[0])
                 time = row[1] + " - " + row[2]
                 print ("|{:^11}|{:^20}|{:^25}| ".format(row[0], time, row[3]))
 
             print(overline * 60)
 
-        edit_day = []
-        for row in conn.execute(f"SELECT day from student_data where student_id = {student_number}"):
-            edit_day.append(row[0])
+        edit_day = conn.execute(f"SELECT day from student_data where student_id = {student_number}").fetchone()[0]
+        edit_class_no = conn.execute(f"SELECT class_no from student_data where student_id = {student_number}").fetchone()[0]
 
-        if len(list(conn.execute(f"SELECT class_no, start, end, teacher from {edit_day[0]}_class"))) == 0:
+        if len(list(conn.execute(f"SELECT class_no, start, end, teacher from {edit_day}_class"))) == 0:
             clear()
-            print("{:^60}".format(f"[  No class on {edit_day[0].title()}, please change to another day  ]\n"))
+            print("{:^60}".format(f"[  No class on {edit_day.title()}, please change to another day  ]\n"))
             input("{:^60}".format("PRESS ANY KEY TO CONTINUE"))
 
         else:
             display_class_list(edit_day)     
-            print("{:^60}".format("------------- Select a time ------------"))
+            print("{:^60}".format(f"------- Current class is ({edit_class_no}) -------"))
             print("{:^60}".format("[  #back to return  ]\n")) 
-            update_class_no = str(input("Enter class number: ")).replace(" ","")
+            update_class_no = str(input("Enter new class number: ")).replace(" ","")
 
             while input_val(update_class_no, True, False)[0] or int(input_val(update_class_no, True, False)[1]) not in class_no_for_validation:
                 display_class_list(edit_day)
-                print("{:^60}".format("------------- Select a time ------------"))
+                print("{:^60}".format(f"------- Current class is ({edit_class_no}) -------"))
                 print("{:^60}".format("[  #back to return  ]\n")) 
 
                 if update_class_no == command_to_return:
@@ -323,7 +322,7 @@ def edit_page():
                 elif int(input_val(update_class_no, True, False)[1]) not in class_no_for_validation:
                     print("{:^60}".format("[  Type the available class number.  ]\n"))
                 
-                update_class_no = str(input("Enter class number: ")).replace(" ","")
+                update_class_no = str(input("Enter new class number: ")).replace(" ","")
 
             update_class_no = int(input_val(update_class_no, True, False)[1])
             update_student(student_number, "class_no", update_class_no)
